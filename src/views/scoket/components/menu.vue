@@ -114,10 +114,12 @@ export default {
   },
   mounted() {
     this.phone = JSON.parse(window.localStorage.getItem('phone'))
-    setTimeout(() => {
+    this.userInfos = this.userInfo
+    this.userInfos.remainingTimes = this.$store.state.total
+    /*setTimeout(() => {
       this.userInfos = this.userInfo
       this.userInfos.remainingTimes = this.$store.state.total
-    }, 2000)
+    }, 2000)*/
   },
   computed: {},
   watch: {
@@ -167,10 +169,11 @@ export default {
     },
     payPage() {
       this.$store.commit('SET_OPEN', false)
-      this.$https('REPEST', {
+      //购买套餐之前先更新一次问答次数，但是用户没有使用过次数时会报没有数据
+      /*this.$https('REPEST', {
         logId: window.localStorage.getItem('logId'),
         newMessages: window.localStorage.getItem('newMessages')
-      }).then(res => {})
+      }).then(res => {})*/
       this.$router.push('/user/product')
     }
   }
