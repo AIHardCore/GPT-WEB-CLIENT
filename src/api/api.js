@@ -8,8 +8,8 @@ export const baseUrl = 'https://gpt.v-wim.xyz-a-s'
  * @LastEditTime: 2023-04-06 14:23:08
  * @FilePath: /chat_gpt/src/api/api.js
  */
-export const baseUrl = 'https://gpt.v-wim.xyz'
-export const wsUrl = 'wss://gpt.v-wim.xyz'
+export const baseUrl = 'http://localhost:8000'
+export const wsUrl = 'ws://localhost:8000'
 
 // export const baseUrl = 'http://ee9qu3.natappfree.cc'
 export const HTTP_URI = {
@@ -24,6 +24,7 @@ export const HTTP_URI = {
   ADD: baseUrl + '/use/log/resetLog',
   NOTICELIST: baseUrl + '/announcement/queryPage',
   PAY: baseUrl + '/order/create',
+  PAY_AGAIN: baseUrl + '/order/pay',
   CANVAS: baseUrl + '/v1/chat/official'
 }
 export default { HTTP_URI, baseUrl }
