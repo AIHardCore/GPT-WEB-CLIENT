@@ -37,7 +37,7 @@
                 @click="openPay(item,2)"
                 class="item wd"
                 v-if="item.type == 1">
-                上限{{ item.monthlyNumber }}次问答
+                月度上限{{ item.monthlyNumber }}次问答
               </div>
             </div>
 

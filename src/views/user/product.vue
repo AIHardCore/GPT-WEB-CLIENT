@@ -37,7 +37,7 @@
                 @click="openPay(item,2)"
                 class="item wd"
                 v-if="item.type == 1">
-                上限{{ item.monthlyNumber }}次问答
+                月度上限{{ item.monthlyNumber }}次问答
               </div>
             </div>
 
@@ -153,6 +153,13 @@
           width="180"
           label="支付时间">
         </el-table-column>
+        <el-table-column
+            label="操作">
+          <template
+              slot-scope="scope">
+            <el-button v-if="scope.row.state == '0'" size="mini" type="primary" @click="pay(scope.row)">去支付</el-button>
+          </template>
+        </el-table-column>
       </el-table>
       <div v-if="phone">
         <el-card
@@ -238,6 +245,11 @@
                     type="danger">支付失败</el-tag>
                 </span>
               </div>
+              <div v-if="item.state == '0'">
+                <span>
+                  <el-button size="mini" type="primary" @click="pay(item)">去支付</el-button>
+                </span>
+              </div>
             </div>
             <div
               class="items">
@@ -257,14 +269,18 @@
     <PayModal ref="showPay"
       @payType="payFun">
     </PayModal>
+    <PayInfo ref="showPayInfo"
+      @payType="payAgainFun">
+    </PayInfo>
 
   </div>
 </template>
 
 <script>
 import PayModal from './components/payModal.vue'
+import PayInfo from './components/payInfo.vue'
 export default {
-  components: { PayModal },
+  components: { PayModal, PayInfo},
   data() {
     return {
       phone: false,
@@ -287,9 +303,38 @@ export default {
         window.localStorage.setItem('orderList', JSON.stringify(res.data.orderList))
       })
     },
+    pay(data){
+      this.$refs.showPayInfo.open(data)
+    },
     payFun(data) {
       this.$message.success('正在发起支付...')
       this.$https('PAY', data).then(res => {
+        if (res.status == 200) {
+          this.url = res.data.url
+          this.form = {
+            money: `${res.data.money}`,
+            name: res.data.name,
+            notify_url: res.data.notifyUrl,
+            out_trade_no: res.data.outTradeNo,
+            pid: `${res.data.pid}`,
+            type: res.data.type,
+            sign: res.data.sign,
+            sign_type: res.data.signType,
+            return_url: res.data.returnUrl
+          }
+          console.log(this.form)
+          // return
+          setTimeout(() => {
+            document.forms['paying'].submit()
+          }, 500)
+        } else {
+          this.$message.warning(res.msg)
+        }
+      })
+    },
+    payAgainFun(data) {
+      this.$message.success('正在发起支付...')
+      this.$https('PAY_AGAIN', data).then(res => {
         if (res.status == 200) {
           this.url = res.data.url
           this.form = {
