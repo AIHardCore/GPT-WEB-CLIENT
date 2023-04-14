@@ -24,7 +24,6 @@
       <el-card class="forms"
         v-if="showPage"
         shadow="never">
-
         <el-form :model="form"
           :rules="rules"
           ref="ruleForm"
@@ -65,13 +64,7 @@
       <el-card class="forms"
         shadow="never"
         v-if="!showPage">
-        <img
-          :src="require('../assets/erweima.jpg')"
-          style="width: 310px;">
-        <div
-          style="text-align:center">
-          关注公众号开通账号</div>
-        <!-- <el-form
+        <el-form
           :model="regform"
           :rules="regrules"
           ref="regform"
@@ -124,7 +117,7 @@
             style="width:100%">
             注册</el-button>
         </el-form-item>
-        </el-form> -->
+        </el-form>
       </el-card>
       <el-button
         v-if="showPage"
@@ -184,6 +177,10 @@ export default {
       this.$refs.ruleForm.validate(valid => {
         if (valid) {
           this.$https('LOGIN', this.form).then(res => {
+            if (res.code == 50000){
+              this.$message.success(res.msg)
+              return;
+            }
             window.localStorage.setItem('userInfo', JSON.stringify(res.data))
             window.localStorage.setItem('token', res.data.token)
             this.$message.success('登录成功！')
@@ -199,20 +196,20 @@ export default {
         }
       })
     },
-    // reglogin() {
-    //   this.$refs.regform.validate(valid => {
-    //     if (valid) {
-    //       this.$https('REGISTER', this.regform).then(res => {
-    //         if (res.status == 200) {
-    //           this.$message.success('注册成功！')
-    //           this.showPage = !this.showPage
-    //         } else {
-    //           this.$message.error(res.msg)
-    //         }
-    //       })
-    //     }
-    //   })
-    // },
+    reglogin() {
+      this.$refs.regform.validate(valid => {
+        if (valid) {
+          this.$https('REGISTER', this.regform).then(res => {
+            if (res.status == 200) {
+              this.$message.success('注册成功！')
+              this.showPage = !this.showPage
+            } else {
+              this.$message.error(res.msg)
+            }
+          })
+        }
+      })
+    },
     reg() {
       this.showPage = !this.showPage
     },
