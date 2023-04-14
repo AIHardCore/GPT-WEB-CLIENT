@@ -193,7 +193,9 @@ export default {
       console.log(e.data)
       //接收数据
       // this.lists.push(jsonObj.message)
-      this.arr.push(e.data)
+      if (e.data != "${<keep>}"){
+        this.arr.push(e.data)
+      }
     },
     webSocketClose(e) {
       this.scoketText = '断开连接'
@@ -202,7 +204,7 @@ export default {
       this.reconnect()
     },
     webSocketOnError(e) {
-      this.$message.error('报错信息', e)
+      this.$message.error('服务器开小差了，等下再试试吧', e)
     },
     webSocketSend(Data) {
       //发送数据发送
