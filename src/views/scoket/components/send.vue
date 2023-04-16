@@ -30,28 +30,32 @@
 
 <script>
 export default {
-  props: ['chatLists'],
+  props: ['chatList','isChat'],
   data() {
     return {
       phone: false,
       sendText: '',
+      conversationId: '',
       obj: {},
       logId: '',
       num: 0,
       disabled: false,
       messagesList: [],
       newMessageList: [],
-      chatListss: []
+      chatListss: [],
     }
   },
   watch: {
-    chatLists: {
+    chatList: {
       handler(val) {
         this.chatListss = val
         this.obj.messages = val
         window.localStorage.setItem('messages', JSON.stringify(val))
         this.disabled = false
       }
+    },
+    isChat(val){
+      this.conversationId =  this.chatList[val].conversationId
     }
   },
   created() {
@@ -91,6 +95,9 @@ export default {
       if (this.sendText) {
         const obj = {
           question: this.sendText,
+          content: this.sendText,
+          conversationId: this.conversationId,
+          chatId: this.chatId,
           answer: ``
         }
         this.$emit('sendText', obj)
@@ -102,6 +109,9 @@ export default {
       } else {
         this.$message.error('请输入')
       }
+    },
+    setConversationId(conversationId){
+      this.conversationId = conversationId;
     }
   }
 }

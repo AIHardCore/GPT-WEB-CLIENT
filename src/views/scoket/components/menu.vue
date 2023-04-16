@@ -126,7 +126,7 @@ export default {
     chatList: {
       handler(val) {
         if (val && val.length > 0) {
-          this.chatLists = val[0].chatLists
+          this.chatLists = val[0]
         }
       },
       deep: true

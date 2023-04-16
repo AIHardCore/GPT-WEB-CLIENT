@@ -9,18 +9,21 @@
 -->
 <template>
   <div>
-    <div>
+    <div
+        v-for="(item,index) in chatLists"
+        :key="index"
+        style="margin-bottom: 15px">
       <div
         class="items items_right">
         <div
-          v-if="!phone && chatObj.question"
+          v-if="!phone && item.question"
           class="chat_box"
-          v-html="chatObj.question">
+          v-html="item.question">
         </div>
         <div
-          v-else-if="phone && chatObj.question"
+          v-else-if="phone && item.question"
           class="chat_box phone"
-          v-html="chatObj.question">
+          v-html="item.question">
         </div>
         <div class="tx">
           <img
@@ -29,25 +32,25 @@
         </div>
       </div>
       <div class="items"
-        v-if="chatObj.answer">
+        v-if="item.answer">
         <div class="tx">
           <img
             :src="require('@/assets/chat.png')"
             style="width:40px;height:40px">
         </div>
         <div
-          v-if="!phone && chatObj.answer"
+          v-if="!phone && item.answer"
           class="chat_box">
           <div v-highlight
             class="markdown-body"
-            v-html="chatObj.answer">
+            v-html="item.answer">
           </div>
         </div>
         <div v-else
           class="chat_box phone">
           <div v-highlight
             class="markdown-body"
-            v-html="chatObj.answer ">
+            v-html="item.answer ">
           </div>
         </div>
       </div>
@@ -68,7 +71,9 @@ export default {
       phone: false,
       mdRegex: '',
       chatLists: [],
-      chatObj: {}
+      chatObj: {},
+      scrollElem:null,
+      isOpen: true,
     }
   },
   watch: {
@@ -77,6 +82,9 @@ export default {
         if (val.length > 0) {
           this.chatObj = {}
           this.chatObj = val[0]
+          if (!this.isOpen){
+            this.chatLists = val
+          }
         }
       },
       deep: true
@@ -85,6 +93,7 @@ export default {
       console.log(val)
       this.chatObj = {}
       this.chatObj = this.chatList[val]
+      this.logPage(this.chatObj.conversationId)
       // if (this.mdRegex.test(this.chatObj.answer)) {
       //   this.chatObj.answer = marked(this.chatObj.answer)
       // }
@@ -96,7 +105,7 @@ export default {
       // if (this.mdRegex.test(this.chatObj.answer)) {
       //   this.chatObj.answer = marked(this.chatObj.answer)
       // }
-    }
+    },
   },
   mounted() {
     this.chatObj = {}
@@ -107,7 +116,49 @@ export default {
       this.chatObj = this.chatList[0]
     }
   },
-  methods: {}
+  methods: {
+    logPage(conversationId) {
+      this.$https('LOGGAGE', {
+        conversationId: conversationId,
+        pageNumber: 1,
+        pageSize: 5
+      }).then(res => {
+        this.chatLists = res.data.logPage.records;
+        this.$nextTick(() => {
+          this.scrollElem.scrollTo({ top: this.scrollElem.scrollHeight, behavior: 'smooth' });
+          this.isOpen = false;
+        });
+      })
+    },
+    logPageMore(conversationId,pageNumber) {
+      this.$loading('.chat_right');
+      let flag = false;
+      setTimeout(() => {
+        this.$https('LOGGAGE', {
+          conversationId: conversationId,
+          pageNumber: pageNumber,
+          pageSize: 5
+        }).then(res => {
+          if (res.data.logPage.records.length > 0){
+            for (let i = 1; i <= res.data.logPage.records.length; i++){
+              this.chatLists.unshift(res.data.logPage.records[res.data.logPage.records.length-i]);
+            }
+            this.$nextTick(() => {
+              this.scrollElem.scrollTo({ top: 10, behavior: 'smooth' });
+            });
+            flag = true;
+          }
+        })
+      }, 500)
+      setTimeout(() => {
+        this.$emit('updateLoadState',flag);
+      }, 500)
+    },
+
+    setScrollElem(scrollElem) {
+      this.scrollElem = scrollElem;
+    },
+  }
 }
 </script>
 

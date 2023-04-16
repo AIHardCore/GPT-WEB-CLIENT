@@ -8,8 +8,10 @@ export const baseUrl = 'https://gpt.v-wim.xyz-a-s'
  * @LastEditTime: 2023-04-06 14:23:08
  * @FilePath: /chat_gpt/src/api/api.js
  */
-export const baseUrl = 'http://localhost:8000'
-export const wsUrl = 'ws://localhost:8000'
+//const host = "ihardcore.cn/gpt";
+const host = "localhost:8000";
+export const baseUrl = 'http://'+host
+export const wsUrl = 'ws://'+host
 
 // export const baseUrl = 'http://ee9qu3.natappfree.cc'
 export const HTTP_URI = {
@@ -20,6 +22,7 @@ export const HTTP_URI = {
   USERHOME: baseUrl + '/user/token/home',
   CHAT: baseUrl + '/v1/chat/turbo',
   getType: baseUrl + '/user/token/getType',
+  LOGGAGE: baseUrl + '/use/log/queryPage',
   REPEST: baseUrl + '/use/log/updateLog',
   ADD: baseUrl + '/use/log/resetLog',
   NOTICELIST: baseUrl + '/announcement/queryPage',

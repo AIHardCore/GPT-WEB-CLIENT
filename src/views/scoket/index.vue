@@ -17,7 +17,7 @@
       <div class="main_home">
         <div class="left"
           v-if="!phone">
-          <Menu
+          <Menu ref="menu"
             @addList="addList"
             :total="totals"
             @changeChat="changeChat"
@@ -27,11 +27,12 @@
           </Menu>
         </div>
         <div
-          class="chat_right">
-          <Content
+          class="chat_right" ref="chatScroll" v-on:wxj="updateLoadState">
+          <Content ref="content"
             :isChat="isChat"
             :isChats="isChats"
-            :chatList="chatLists">
+            @updateLoadState="updateLoadState"
+            :chatList="newChatList">
           </Content>
         </div>
       </div>
@@ -79,9 +80,11 @@
               style="margin-right:5px;font-size: 14px;"></i>
             {{ scoketText }}</span>
         </div>
-        <SendText
+        <SendText ref="sendText"
           @sendText="sendTexts"
           @ok="getData"
+          :isChat="isChat"
+          :chatList="newChatList"
           @total="total">
         </SendText>
       </div>
@@ -107,7 +110,6 @@
     </NoticeModal>
   </div>
 </template>
-
 <script>
 import { marked } from 'marked'
 import Notice from '@/components/notice.vue'
@@ -133,14 +135,18 @@ export default {
       loading: false,
       isChat: 0,
       isChats: 0,
+      conversationObj: 0,
       direction: 'ltr',
       chatList: [],
       chatLists: [],
+      newChatList:[],
       oldScrollTop: 0,
       phone: false,
       notice: '',
       arr: [],
-      mdRegex: ''
+      mdRegex: '',
+      pageNumber: 2,
+      loadLogFinish: true
     }
   },
   created() {},
@@ -148,7 +154,7 @@ export default {
   mounted() {
     this.mdRegex = /[#*`|]/
     this.phone = JSON.parse(window.localStorage.getItem('phone'))
-    document.querySelector('.box').addEventListener('scroll', this.scrolling)
+    document.querySelector('.chat_right').addEventListener('scroll', this.scrolling)
     this.getData()
     this.initWebSocket()
   },
@@ -160,6 +166,14 @@ export default {
       },
       deep: true
     },
+    newChatList: {
+      handler(val) {
+        if (this.loadLogFinish){
+          this.scrollToBottom()
+        }
+      },
+      deep: true
+    },
     arr: {
       handler(val) {
         this.loading = false
@@ -168,6 +182,11 @@ export default {
         this.chatList[0].answer = val.join('')
         if (this.mdRegex.test(this.chatList[0].answer)) {
           this.chatList[0].answer = marked(this.chatList[0].answer)
+        }
+        this.newChatList[this.newChatList.length-1].answer = ''
+        this.newChatList[this.newChatList.length-1].answer = val.join('')
+        if (this.mdRegex.test(this.newChatList[this.newChatList.length-1].answer)) {
+          this.newChatList[this.newChatList.length-1].answer = marked(this.newChatList[this.newChatList.length-1].answer)
         }
       }
     }
@@ -190,12 +209,10 @@ export default {
       // this.webSocketSend(this.id)
     },
     webSocketOnMessage(e) {
-      console.log(e.data)
+      //console.log(e.data)
       //接收数据
       // this.lists.push(jsonObj.message)
-      if (e.data != "${<keep>}"){
-        this.arr.push(e.data)
-      }
+      this.arr.push(e.data)
     },
     webSocketClose(e) {
       this.scoketText = '断开连接'
@@ -224,9 +241,10 @@ export default {
     },
     sendTexts(data) {
       this.arr = []
-      this.chatList.unshift(data)
+      this.newChatList.push(data)
+      this.chatList[0] = (data)
       // this.loading = true
-      this.webSocketSend(data.question)
+      this.webSocketSend(JSON.stringify(data))
     },
     changeChats(e) {
       if (e == 1) {
@@ -242,6 +260,15 @@ export default {
         })
       }
     },
+    logPage(conversationId) {
+      this.$https('LOGGAGE', {
+        conversationId: conversationId,
+        pageNumber: 1,
+        pageSize: 5
+      }).then(res => {
+        this.newChatList = res.data.logPage.records;
+      })
+    },
     getData() {
       this.$https('USERHOME', {
         sendType: 1
@@ -250,12 +277,17 @@ export default {
         this.chatList = res.data.logList
 
         if (this.chatList.length > 0) {
+          this.logPage(this.chatList[0].conversationId)
           this.title = this.chatList[0].question
           this.chatList.map(item => {
             if (this.mdRegex.test(item.answer)) {
               item.answer = marked(item.answer)
             }
           })
+          this.$refs.sendText.setConversationId(this.chatList[0].conversationId)
+          let scrollElem = this.$refs.chatScroll;
+          this.$refs.content.setScrollElem(scrollElem)
+          this.$refs.content.logPage(this.chatList[0].conversationId)
         } else {
           const obj = {
             disabled: true,
@@ -279,6 +311,12 @@ export default {
         }
       })
     },
+    updateLoadState(flag){
+      if (flag){
+        this.pageNumber++;
+      }
+      this.loadLogFinish = true;
+    },
     close(data) {
       this.drawer = data
       this.$store.commit('SET_OPEN', data)
@@ -296,6 +334,7 @@ export default {
       })
     },
     scrolling() {
+      console.log(3)
       let scrollTop = document.querySelector('.chat_right').scrollTop
       // 更新——滚动前，滚动条距文档顶部的距离
       let scrollStep = scrollTop - this.oldScrollTop
@@ -304,7 +343,13 @@ export default {
       if (scrollStep < 0) {
         //向上
         this.scrollFlag = false
+        console.log(1,scrollTop)
+        if (scrollTop <= 0 && this.loadLogFinish){
+          this.loadLogFinish = false;
+          this.$refs.content.logPageMore(this.chatList[0].conversationId,this.pageNumber)
+        }
       } else {
+        console.log(2,scrollTop)
         this.scrollFlag = true
       }
     },
