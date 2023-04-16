@@ -396,8 +396,8 @@ export default {
           flex-grow: 1;
           margin-top: 20px;
           .tx {
-            width: 40px;
-            height: 40px;
+            width: 30px;
+            height: 30px;
             margin-left: 10px;
             border-radius: 10px;
             overflow: hidden;
@@ -412,10 +412,10 @@ export default {
           }
           .chat_box.phone {
             max-width: 60vw;
-            padding: 10px 20px;
+            padding: 10px 10px;
             background: #ffffff;
             border-radius: 5px;
-            margin: 0 10px;
+            margin: 0 0px;
           }
         }
       }
