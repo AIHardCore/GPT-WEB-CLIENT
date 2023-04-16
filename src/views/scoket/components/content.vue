@@ -149,9 +149,9 @@ export default {
             flag = true;
           }
         })
-      }, 500)
-      setTimeout(() => {
-        this.$emit('updateLoadState',flag);
+        setTimeout(() => {
+          this.$emit('updateLoadState',flag);
+        }, 500)
       }, 500)
     },
 
