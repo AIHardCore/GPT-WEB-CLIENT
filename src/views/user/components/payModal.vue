@@ -24,6 +24,7 @@
         prop="payNumber">
         <el-input
           type="Number"
+          @input="(e) => (ruleForm.payNumber = integerFn(e))"
           v-model="ruleForm.payNumber"></el-input>
       </el-form-item>
       <el-form-item
@@ -102,6 +103,7 @@ export default {
     open(data) {
       this.dialogVisible = true
       this.ruleForm.productId = data.id
+      this.ruleForm.type = 'wxpay'
       this.phone = JSON.parse(window.localStorage.getItem('phone'))
       this.position = this.phone ? 'top' : 'right'
     },
@@ -110,7 +112,7 @@ export default {
       this.dialogVisible = false
       this.ruleForm = {
         payNumber: 1,
-        type: '',
+        type: 'wxpay',
         productId: ''
       }
     },
@@ -121,7 +123,29 @@ export default {
           this.handleClose()
         }
       })
-    }
+    },
+    /**
+     * 只能输入大于0的正整数（不能以0开头）
+     * @param {string} value
+     * @returns {string | number} 返回空字符或数字
+     */
+    integerFn(value) {
+      let reg = /[1-9]{1}[0-9]*$/;
+      let strArray = value.split("");
+      let newStrs = "";
+      for (let i = 0; i < strArray.length; i++) {
+        if (reg.test(strArray[i])) {
+          newStrs += strArray[i];
+        } else if (i > 0 && strArray[i] === "0") {
+          newStrs += strArray[i];
+        }
+      }
+      if (newStrs - 0 > 0) {
+        return newStrs - 0;
+      } else {
+        return 1;
+      }
+    },
   }
 }
 </script>

@@ -291,6 +291,11 @@ export default {
     }
   },
   mounted() {
+    let tradeStatus = this.$route.query.trade_status
+    if (tradeStatus === "TRADE_SUCCESS"){
+      this.$message.success('支付成功！')
+    }
+
     this.phone = JSON.parse(window.localStorage.getItem('phone'))
     this.getData()
   },
@@ -367,7 +372,7 @@ export default {
           this.$refs.showPay.open(data)
         }
       })
-    }
+    },
   }
 }
 </script>

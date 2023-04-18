@@ -27,7 +27,7 @@
         </div>
         <div class="tx">
           <img
-            src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"
+              :src="require('@/assets/user_avatar.png')"
             style="width:30px;height:30px">
         </div>
       </div>
@@ -147,9 +147,7 @@ export default {
             }
             this.$nextTick(() => {
               this.scrollElem.scrollTo({ top: 10, behavior: 'smooth' });
-              setTimeout(() => {
-                this.$emit('updateLoadState',flag);
-              }, 500)
+              this.$emit('updateLoadState',flag);
             });
             flag = true;
           }

@@ -86,6 +86,9 @@
       <input type='hidden'
         name='sign'
         :value='form.sign' />
+      <input type='hidden'
+        name='sign'
+        :value='form.param' />
       <input type='submit'
         v-show=" false"
         value='正在跳转'>
@@ -289,6 +292,7 @@ export default {
     },
     payFun(data) {
       this.$message.success('正在发起支付...')
+      debugger
       this.$https('PAY', data).then(res => {
         if (res.status == 200) {
           this.url = res.data.url
@@ -301,7 +305,8 @@ export default {
             type: res.data.type,
             sign: res.data.sign,
             sign_type: res.data.signType,
-            return_url: res.data.returnUrl
+            return_url: res.data.returnUrl,
+            param: res.data.param
           }
           console.log(this.form)
           // return

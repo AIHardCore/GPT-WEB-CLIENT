@@ -30,13 +30,14 @@
 
 <script>
 export default {
-  props: ['chatLists'],
+  props: ['chatList','isChat','userInfo'],
   data() {
     return {
       phone: false,
       sendText: '',
       obj: {},
       logId: '',
+      userInfo:{},
       disabled: false,
       messagesList: [],
       newMessageList: [],
@@ -108,7 +109,10 @@ export default {
           this.$https('CHAT', this.obj).then(res => {
             if (res.code == 20000) {
               this.chatListss.push(res.data.choices[0].message)
-              num = num - 1
+              debugger
+              if (this.userInfo.type == 0 && num > 0){
+                num = num - 1
+              }
               this.$store.commit('SET_TOTAL', num)
               this.disabled = false
               this.$emit('total', num)

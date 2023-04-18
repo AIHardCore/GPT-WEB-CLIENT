@@ -30,7 +30,7 @@
 
 <script>
 export default {
-  props: ['chatList','isChat'],
+  props: ['chatList','isChat','userInfo'],
   data() {
     return {
       phone: false,
@@ -68,7 +68,6 @@ export default {
   },
   mounted() {
     this.phone = JSON.parse(window.localStorage.getItem('phone'))
-
     this.getTypes()
   },
   methods: {
@@ -102,7 +101,9 @@ export default {
         }
         this.$emit('sendText', obj)
         this.sendText = ''
-        num = num - 1
+        if (this.userInfo.type == 0 && num > 0){
+          num = num - 1
+        }
         this.$store.commit('SET_TOTAL', num)
         this.disabled = false
         this.$emit('total', num)

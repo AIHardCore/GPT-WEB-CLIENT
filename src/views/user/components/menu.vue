@@ -51,7 +51,7 @@
       :class="{'phone':phone?true:false}">
       <div class="lefts">
         <el-avatar
-          src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"></el-avatar>
+            :src="require('@/assets/user_avatar.png')"></el-avatar>
       </div>
       <div class="center"
         style="text-align: left;margin-left: -50px;">

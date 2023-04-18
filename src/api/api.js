@@ -8,10 +8,14 @@ export const baseUrl = 'https://gpt.v-wim.xyz-a-s'
  * @LastEditTime: 2023-04-06 14:23:08
  * @FilePath: /chat_gpt/src/api/api.js
  */
-//const host = "ihardcore.cn/gpt";
-const host = "localhost:8000";
-export const baseUrl = 'http://'+host
-export const wsUrl = 'ws://'+host
+let protocol = window.location.protocol;
+let host = window.location.host;
+if (host.indexOf("localhost") == -1 && host.indexOf("127.0.0.1") == -1){
+  host = host + "/gpt";
+}
+export const baseUrl = protocol + '//' + host;
+
+export const wsUrl = (protocol + '//' + host).replace("http", "ws").replace("https", "wss");
 
 // export const baseUrl = 'http://ee9qu3.natappfree.cc'
 export const HTTP_URI = {

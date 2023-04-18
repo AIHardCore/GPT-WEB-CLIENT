@@ -85,6 +85,7 @@
           @ok="getData"
           :isChat="isChat"
           :chatList="newChatList"
+          :userInfo="userInfo"
           @total="total">
         </SendText>
       </div>
@@ -108,9 +109,20 @@
     </el-drawer>
     <NoticeModal ref="notice">
     </NoticeModal>
+    <el-dialog
+        title="提示"
+        :visible.sync="dialogVisibles"
+        width="60%">
+      <span>剩余次数不足,是否进行充值？</span>
+      <span slot="footer" class="dialog-footer">
+        <el-button size="mini" @click="dialogVisibles  = false">取 消</el-button>
+        <el-button size="mini" type="primary" @click="showMessageBox">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 <script>
+
 import { marked } from 'marked'
 import Notice from '@/components/notice.vue'
 import Menu from './components/menu.vue'
@@ -146,7 +158,7 @@ export default {
       arr: [],
       mdRegex: '',
       pageNumber: 2,
-      loadLogFinish: true
+      loadLogFinish: true,
     }
   },
   created() {},
@@ -212,6 +224,9 @@ export default {
       //console.log(e.data)
       //接收数据
       // this.lists.push(jsonObj.message)
+      if (e.data.indexOf("剩余次数不足,请充值") > -1){
+        this.dialogVisibles = true;
+      }
       this.arr.push(e.data)
     },
     webSocketClose(e) {
@@ -305,8 +320,10 @@ export default {
           type: res.data.type
         }
         if (res.data.type == 0) {
+          this.totals = res.data.remainingTimes;
           this.$store.commit('SET_TOTAL', res.data.remainingTimes)
         } else {
+          this.totals = res.data.dayRemainingTimes;
           this.$store.commit('SET_TOTAL', res.data.dayRemainingTimes)
         }
       })
@@ -334,7 +351,6 @@ export default {
       })
     },
     scrolling() {
-      console.log(3)
       let scrollTop = document.querySelector('.chat_right').scrollTop
       // 更新——滚动前，滚动条距文档顶部的距离
       let scrollStep = scrollTop - this.oldScrollTop
@@ -343,13 +359,11 @@ export default {
       if (scrollStep < 0) {
         //向上
         this.scrollFlag = false
-        console.log(1,scrollTop)
         if (scrollTop <= 0 && this.loadLogFinish){
           this.loadLogFinish = false;
           this.$refs.content.logPageMore(this.chatList[0].conversationId,this.pageNumber)
         }
       } else {
-        console.log(2,scrollTop)
         this.scrollFlag = true
       }
     },
@@ -360,6 +374,10 @@ export default {
       this.drawer = data.show
       this.isChat = data.data
       this.$store.commit('SET_OPEN', data.show)
+    },
+    showMessageBox() {
+      this.dialogVisibles = false;
+      this.$router.push('/user/product')
     }
   }
 }

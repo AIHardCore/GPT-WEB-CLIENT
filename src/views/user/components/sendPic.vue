@@ -30,7 +30,7 @@
 
 <script>
 export default {
-  props: ['chatLists'],
+  props: ['chatLists','userInfo'],
   data() {
     return {
       phone: false,
@@ -86,7 +86,9 @@ export default {
               }
               this.chatListss.push(objs)
               this.$emit('chatListss', this.chatListss)
-              num = num - 1
+              if (this.userInfo.type == 0 && num > 0){
+                num = num - 1
+              }
               this.$store.commit('SET_TOTAL', num)
               this.disabled = false
               this.$emit('total', num)

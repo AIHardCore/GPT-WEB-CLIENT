@@ -88,7 +88,9 @@
           v-if="isActive == 0"
           @ok="getData"
           @total="total"
-          :chatLists="chatLists">
+          :isChat="isChat"
+          :chatList="newChatList"
+          :userInfo="userInfo">
         </SendText>
         <SendPic @ok="getData"
           v-if="isActive == 1"
@@ -145,6 +147,8 @@ export default {
       sendText: '',
       title: 'New Chat',
       isActive: 0,
+      isChat: 0,
+      isChats: 0,
       userInfo: {},
       chatLists: [],
       kitList: [],

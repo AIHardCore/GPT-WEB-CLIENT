@@ -82,21 +82,21 @@ export default {
       width: '400px',
       phone: false,
       options: [
-        {
+        /*{
           icon: require('@/assets/qq.png'),
           name: 'QQ钱包',
           type: 'qqpay'
-        },
+        },*/
         {
           icon: require('@/assets/wx.png'),
           name: '微信支付',
           type: 'wxpay'
         },
-        {
+        /*{
           icon: require('@/assets/pay.png'),
           name: '支付宝支付',
           type: 'alipay'
-        }
+        }*/
       ]
     }
   },

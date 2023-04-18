@@ -74,7 +74,6 @@ const router = new VueRouter({
 })
 // 全局路由构造函数，判断是否登录和要跳转到页面
 router.beforeEach((to, from, next) => {
-  console.log(to.path)
   if (to.path !== '/login') {
     let token = window.localStorage.getItem('token')
     if (!token) {
