@@ -71,15 +71,9 @@
           label-width="0px"
           class="demo-ruleForm">
           <el-form-item
-            prop="name">
-            <el-input
-              prefix-icon="el-icon-user-solid"
-              placeholder="请输入姓名"
-              v-model="regform.name"></el-input>
-          </el-form-item>
-          <el-form-item
             prop="mobile">
             <el-input
+              type ='text'
               prefix-icon="el-icon-mobile-phone"
               placeholder="请输入手机号"
               v-model="regform.mobile"></el-input>
@@ -95,6 +89,13 @@
                 @click="type == 'password'? type ='text':type ='password'"
                 class="el-input__icon el-icon-view"></i>
             </el-input>
+          </el-form-item>
+          <el-form-item
+              prop="name">
+            <el-input
+                prefix-icon="el-icon-user-solid"
+                placeholder="请输入姓名"
+                v-model="regform.name"></el-input>
           </el-form-item>
           <el-form-item
             prop="msgCode">
@@ -135,6 +136,7 @@
 export default {
   data() {
     return {
+      readonly:true,
       showPage: true,
       form: {
         mobile: '',
@@ -145,7 +147,7 @@ export default {
         name: '',
         mobile: '',
         password: '',
-        msgCode: '1101'
+        msgCode: ''
       },
       disabled: false,
       timer: null,
@@ -213,24 +215,32 @@ export default {
     reg() {
       this.showPage = !this.showPage
     },
-    // getCode() {
-    //   const TIME_COUNT = 10
-    //   if (!this.timer) {
-    //     this.time = TIME_COUNT
-    //     this.disabled = true
-    //     this.timer = setInterval(() => {
-    //       if (this.time > 0 && this.time <= TIME_COUNT) {
-    //         this.time--
-    //         this.codeText = this.time + 's后获取'
-    //       } else {
-    //         this.disabled = false
-    //         this.codeText = '获取验证码'
-    //         clearInterval(this.timer)
-    //         this.timer = null
-    //       }
-    //     }, 1000)
-    //   }
-    // },
+    getCode() {
+      this.$https('GETCODE', {
+        mobile: this.regform.mobile
+      }).then(res => {
+        if (res.status == 200) {
+          const TIME_COUNT = 10
+          if (!this.timer) {
+            this.time = TIME_COUNT
+            this.disabled = true
+            this.timer = setInterval(() => {
+              if (this.time > 0 && this.time <= TIME_COUNT) {
+                this.time--
+                this.codeText = this.time + 's后获取'
+              } else {
+                this.disabled = false
+                this.codeText = '获取验证码'
+                clearInterval(this.timer)
+                this.timer = null
+              }
+            }, 1000)
+          }
+        } else {
+          this.$message.error(res.msg)
+        }
+      })
+    },
     _isMobile() {
       let flag = navigator.userAgent.match(
         /(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i

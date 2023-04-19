@@ -9,9 +9,11 @@ export const baseUrl = 'https://gpt.v-wim.xyz-a-s'
  * @FilePath: /chat_gpt/src/api/api.js
  */
 let protocol = window.location.protocol;
-let host = window.location.host;
+let host = window.location.hostname;
 if (host.indexOf("localhost") == -1 && host.indexOf("127.0.0.1") == -1){
   host = host + "/gpt";
+}else {
+  host = host + ":8000";
 }
 export const baseUrl = protocol + '//' + host;
 
@@ -20,6 +22,7 @@ export const wsUrl = (protocol + '//' + host).replace("http", "ws").replace("htt
 // export const baseUrl = 'http://ee9qu3.natappfree.cc'
 export const HTTP_URI = {
   BASEURL: baseUrl,
+  GETCODE: baseUrl + '/user/token/smsCode',
   REGISTER: baseUrl + '/user/token/register',
   LOGIN: baseUrl + '/user/token/login',
   PRODUCT: baseUrl + '/product/list',
