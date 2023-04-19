@@ -220,7 +220,7 @@ export default {
         mobile: this.regform.mobile
       }).then(res => {
         if (res.status == 200) {
-          const TIME_COUNT = 10
+          const TIME_COUNT = 60
           if (!this.timer) {
             this.time = TIME_COUNT
             this.disabled = true
