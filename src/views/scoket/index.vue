@@ -292,7 +292,6 @@ export default {
         this.chatList = res.data.logList
 
         if (this.chatList.length > 0) {
-          this.logPage(this.chatList[0].conversationId)
           this.title = this.chatList[0].question
           this.chatList.map(item => {
             if (this.mdRegex.test(item.answer)) {
