@@ -167,7 +167,6 @@ export default {
     console.log(this.phone, '000')
     document.querySelector('.box').addEventListener('scroll', this.scrolling)
     if (this.$route.query && this.$route.query.id) {
-      console.log(122)
       this.isActive = 1
     } else {
       this.isActive = 0
