@@ -32,7 +32,8 @@
             :isChat="isChat"
             :isChats="isChats"
             @updateLoadState="updateLoadState"
-            :chatList="newChatList">
+            :chatList="newChatList"
+            :menuChatList="chatList">
           </Content>
         </div>
       </div>
@@ -159,6 +160,7 @@ export default {
       mdRegex: '',
       pageNumber: 2,
       loadLogFinish: true,
+      currMenuIndex: 0
     }
   },
   created() {},
@@ -190,10 +192,10 @@ export default {
       handler(val) {
         this.loading = false
         this.isChats = val.length
-        this.chatList[0].answer = ''
-        this.chatList[0].answer = val.join('')
-        if (this.mdRegex.test(this.chatList[0].answer)) {
-          this.chatList[0].answer = marked(this.chatList[0].answer)
+        this.chatList[this.currMenuIndex].answer = ''
+        this.chatList[this.currMenuIndex].answer = val.join('')
+        if (this.mdRegex.test(this.chatList[this.currMenuIndex].answer)) {
+          this.chatList[0].answer = marked(this.chatList[this.currMenuIndex].answer)
         }
         this.newChatList[this.newChatList.length-1].answer = ''
         this.newChatList[this.newChatList.length-1].answer = val.join('')
@@ -257,7 +259,7 @@ export default {
     sendTexts(data) {
       this.arr = []
       this.newChatList.push(data)
-      this.chatList[0] = (data)
+      this.chatList[this.currMenuIndex] = (data)
       // this.loading = true
       this.webSocketSend(JSON.stringify(data))
     },
@@ -294,18 +296,18 @@ export default {
         //如果有会话列表，则加载第一条会话的聊天记录
         if (this.chatList.length > 0) {
           //加载最后一页聊天记录
-          this.logPage(this.chatList[0].conversationId)
-          this.title = this.chatList[0].question
+          this.logPage(this.chatList[this.currMenuIndex].conversationId)
+          this.title = this.chatList[this.currMenuIndex].question
           this.chatList.map(item => {
             if (this.mdRegex.test(item.answer)) {
               item.answer = marked(item.answer)
             }
           })
-          this.$refs.sendText.setConversationId(this.chatList[0].conversationId)
+          this.$refs.sendText.setConversationId(this.chatList[this.currMenuIndex].conversationId)
           let scrollElem = this.$refs.chatScroll;
           this.$refs.content.setScrollElem(scrollElem)
           //设置聊天框的聊天记录
-          this.$refs.content.setLogPage(this.newChatList)
+          this.$refs.content.setLogPage(this.newChatList,scrollElem)
         } else {
           const obj = {
             disabled: true,
@@ -331,9 +333,9 @@ export default {
         }
       })
     },
-    updateLoadState(flag){
+    updateLoadState(flag,pageNumber){
       if (flag){
-        this.pageNumber++;
+        this.pageNumber = pageNumber;
       }
       this.loadLogFinish = true;
     },
@@ -364,7 +366,7 @@ export default {
         this.scrollFlag = false
         if (scrollTop <= 0 && this.loadLogFinish){
           this.loadLogFinish = false;
-          this.$refs.content.logPageMore(this.chatList[0].conversationId,this.pageNumber)
+          this.$refs.content.logPageMore(this.chatList[this.currMenuIndex].conversationId,this.pageNumber)
         }
       } else {
         this.scrollFlag = true
@@ -374,6 +376,9 @@ export default {
       this.totals = data
     },
     changeChat(data) {
+      this.loadLogFinish = false;
+      this.pageNumber = 1
+      this.currMenuIndex = data.data
       this.drawer = data.show
       this.isChat = data.data
       this.$store.commit('SET_OPEN', data.show)

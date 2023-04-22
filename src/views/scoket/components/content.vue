@@ -67,7 +67,7 @@ import { marked } from 'marked'
 import 'highlight.js/styles/devibeans.css'
 
 export default {
-  props: ['chatList', 'isChat', 'isChats'],
+  props: ['chatList', 'isChat', 'isChats','menuChatList'],
   data() {
     return {
       phone: false,
@@ -95,7 +95,7 @@ export default {
       console.log(val)
       this.chatObj = {}
       this.chatObj = this.chatList[val]
-      this.logPage(this.chatObj.conversationId)
+      this.logPage(this.menuChatList[val].conversationId)
       // if (this.mdRegex.test(this.chatObj.answer)) {
       //   this.chatObj.answer = marked(this.chatObj.answer)
       // }
@@ -103,7 +103,8 @@ export default {
     },
     isChats(val) {
       this.chatObj = {}
-      this.chatObj = this.chatList[0]
+      this.chatObj = this.chatList[val]
+      this.logPage(this.menuChatList[val].conversationId)
       // if (this.mdRegex.test(this.chatObj.answer)) {
       //   this.chatObj.answer = marked(this.chatObj.answer)
       // }
@@ -130,9 +131,11 @@ export default {
           this.scrollElem.scrollTo({ top: this.scrollElem.scrollHeight, behavior: 'smooth' });
           this.isOpen = false;
         });
+        this.$emit('updateLoadState',true,1);
       })
     },
-    setLogPage(newChatList) {
+    setLogPage(newChatList,scrollElem) {
+      this.scrollElem = scrollElem
       this.chatLists = newChatList;
       this.$nextTick(() => {
         this.scrollElem.scrollTo({ top: this.scrollElem.scrollHeight, behavior: 'smooth' });
@@ -140,6 +143,7 @@ export default {
       });
     },
     logPageMore(conversationId,pageNumber) {
+      pageNumber++;
       this.$loading('.chat_right');
       let flag = false;
       setTimeout(() => {
@@ -154,13 +158,13 @@ export default {
             }
             this.$nextTick(() => {
               this.scrollElem.scrollTo({ top: 10, behavior: 'smooth' });
-              this.$emit('updateLoadState',flag);
+              this.$emit('updateLoadState',flag,pageNumber);
             });
             flag = true;
           }
         })
         setTimeout(() => {
-          this.$emit('updateLoadState',flag);
+          this.$emit('updateLoadState',flag,pageNumber);
         }, 500)
       }, 500)
     },
