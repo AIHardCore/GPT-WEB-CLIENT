@@ -37,7 +37,7 @@
                 @click="openPay(item,2)"
                 class="item wd"
                 v-if="item.type == 1">
-                月度上限{{ item.monthlyNumber }}次问答
+                每日上限{{ item.monthlyNumber }}次问答
               </div>
             </div>
 
@@ -45,7 +45,7 @@
               @click="openPay(item,2)"
               class="item remark"
               style="font-size: 12px;"
-              v-if="item.type == 2">
+              v-if="item.type == 5">
               仅限月卡用户使用，有效期一天
             </div>
             <div class="ceng"

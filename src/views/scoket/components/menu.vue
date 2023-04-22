@@ -58,11 +58,23 @@
           style="font-size: #666;">
           {{ userInfo.name }}
           <el-tag size="mini"
-            v-if="userInfo.type == 0"
+            v-if="userInfo.type == 1"
             type="info">普</el-tag>
           <el-tag size="mini"
-            v-if="userInfo.type == 1"
+            v-if="userInfo.type == 2"
             type="warning">月</el-tag>
+          <el-tag size="mini"
+            v-if="userInfo.type == 3"
+            type="warning">季</el-tag>
+          <el-tag size="mini"
+            v-if="userInfo.type == 4"
+            type="warning">年</el-tag>
+          <el-tag size="mini"
+            v-if="userInfo.type == 5"
+            type="warning">终</el-tag>
+          <el-tag size="mini"
+            v-if="userInfo.type == -1"
+            type="warning">管理</el-tag>
           <template
             v-if="kitList && kitList.length > 0">
             <el-tag
@@ -75,17 +87,16 @@
           </template>
         </div>
         <div
-          v-if="userInfos.type == 0"
+          v-if="userInfos.type == 1"
           style="font-size: 13px;color:#999999;margin-top: 5px;">
           剩余：{{userInfos.remainingTimes}}次
         </div>
         <div
-          v-if="userInfos.type == 1"
           style="font-size: 13px;color:#999999;margin-top: 5px;">
           今日剩余：{{ userInfos.dayRemainingTimes }}次
         </div>
         <div
-          v-if="userInfos.type == 1"
+          v-if="userInfos.type > 1"
           style="font-size: 13px;color:#999999">
           {{userInfos.expirationTime.substring(0,10)}}到期
         </div>

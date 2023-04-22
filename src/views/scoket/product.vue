@@ -37,7 +37,7 @@
                 @click="openPay(item,2)"
                 class="item wd"
                 v-if="item.type == 1">
-                月度上限{{ item.monthlyNumber }}次问答
+                每日上限{{ item.monthlyNumber }}次问答
               </div>
             </div>
 
@@ -45,7 +45,7 @@
               @click="openPay(item,2)"
               class="item remark"
               style="font-size: 12px;"
-              v-if="item.type == 2">
+              v-if="item.type == 5">
               仅限月卡用户使用，有效期一天
             </div>
             <div class="ceng"
@@ -56,43 +56,6 @@
       </el-row>
     </el-card>
 
-    <form id='paying'
-      :action='url'
-      method='post'>
-      <input type='hidden'
-        name='money'
-        :value='form.money' />
-      <input type='hidden'
-        name='name'
-        :value='form.name' />
-      <input type='hidden'
-        name='notify_url'
-        :value='form.notify_url' />
-      <input type='hidden'
-        name='out_trade_no'
-        :value='form.out_trade_no' />
-      <input type='hidden'
-        name='pid'
-        :value='form.pid' />
-      <input type='hidden'
-        name='return_url'
-        :value='form.return_url' />
-      <input type='hidden'
-        name='type'
-        :value='form.type' />
-      <input type='hidden'
-        name='sign_type'
-        :value='form.sign_type' />
-      <input type='hidden'
-        name='sign'
-        :value='form.sign' />
-      <input type='hidden'
-        name='sign'
-        :value='form.param' />
-      <input type='submit'
-        v-show=" false"
-        value='正在跳转'>
-    </form>
     <el-card
       style="margin-top: 20px;"
       class="product_box"
@@ -265,6 +228,7 @@
 </template>
 
 <script>
+import wx from 'http://res.wx.qq.com/open/js/jweixin-1.6.0.js'
 import PayModal from './components/payModal.vue'
 export default {
   components: { PayModal },
@@ -278,6 +242,10 @@ export default {
     }
   },
   mounted() {
+    let tradeStatus = this.$route.query.trade_status
+    if (tradeStatus === "TRADE_SUCCESS"){
+      this.$message.success('支付成功！')
+    }
     this.phone = JSON.parse(window.localStorage.getItem('phone'))
     this.getData()
   },
@@ -292,27 +260,47 @@ export default {
     },
     payFun(data) {
       this.$message.success('正在发起支付...')
-      debugger
       this.$https('PAY', data).then(res => {
         if (res.status == 200) {
-          this.url = res.data.url
-          this.form = {
-            money: `${res.data.money}`,
-            name: res.data.name,
-            notify_url: res.data.notifyUrl,
-            out_trade_no: res.data.outTradeNo,
-            pid: `${res.data.pid}`,
-            type: res.data.type,
-            sign: res.data.sign,
-            sign_type: res.data.signType,
-            return_url: res.data.returnUrl,
-            param: res.data.param
-          }
+          // 调起微信支付
+          let that = this;
+          let { appId, nonceStr, timeStamp, sign } = res.data;
+          let prepayId = res.data.package;
+          wx.config({
+            debug: true, // 测试阶段可用 true 打包返回给后台用 false
+            appId: appId,
+            timestamp: timeStamp,
+            nonceStr: nonceStr,
+            signature: sign,
+            jsApiList: ['chooseWXPay']
+          });
+          wx.ready(function(){
+            wx.chooseWXPay({
+              appId: appId,
+              timestamp: timeStamp, // 时间戳
+              nonceStr: nonceStr, // 随机字符串
+              package: prepayId, // 统一支付接口返回的prepay_id参数值
+              signType: 'MD5', //  签名方式，默认为'SHA1'，使用新版支付需传入'MD5'
+              paySign: sign, // 支付签名
+              success: function (res) {
+                that.Toast('支付成功');
+              },
+              cancel: function (res) {
+                that.Toast('支付取消');
+              },
+              fail: function (res) {
+                that.Toast('支付失败');
+              }
+            });
+          });
+          this.$https('getType', {}).then(res => {
+            if (data.type == 2 && res.data.type !== 1) {
+              this.$alert('只有月卡用户可以购买加油包', '提示')
+            } else {
+              this.$refs.showPay.open(data)
+            }
+          })
           console.log(this.form)
-          // return
-          setTimeout(() => {
-            document.forms['paying'].submit()
-          }, 500)
         } else {
           this.$message.warning(res.msg)
         }
