@@ -35,6 +35,7 @@ export const HTTP_URI = {
   NOTICELIST: baseUrl + '/announcement/queryPage',
   PAY: baseUrl + '/order/create',
   PAY_AGAIN: baseUrl + '/order/pay',
-  CANVAS: baseUrl + '/v1/chat/official'
+  CANVAS: baseUrl + '/v1/chat/official',
+  WXGZHINFO: baseUrl + '/wx/gzhInfo'
 }
 export default { HTTP_URI, baseUrl }

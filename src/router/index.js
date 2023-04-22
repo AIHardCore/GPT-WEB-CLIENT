@@ -19,6 +19,11 @@ export const routes = [
     component: () => import('../views/login.vue')
   },
   {
+    path: '/auth',
+    name: 'auth',
+    component: () => import('../views/auth.vue')
+  },
+  {
     path: '/',
     name: '客户端',
     type: 'user',
@@ -74,7 +79,9 @@ const router = new VueRouter({
 })
 // 全局路由构造函数，判断是否登录和要跳转到页面
 router.beforeEach((to, from, next) => {
-  if (to.path !== '/login') {
+  if (to.path == '/auth') {
+    next()
+  } else if (to.path !== '/login') {
     let token = window.localStorage.getItem('token')
     if (!token) {
       next('/login')
