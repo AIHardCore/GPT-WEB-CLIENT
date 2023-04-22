@@ -289,9 +289,12 @@ export default {
         sendType: 1
       }).then(res => {
         this.notice = res.data.content
+        //会话列表
         this.chatList = res.data.logList
-
+        //如果有会话列表，则加载第一条会话的聊天记录
         if (this.chatList.length > 0) {
+          //加载最后一页聊天记录
+          this.logPage(this.chatList[0].conversationId)
           this.title = this.chatList[0].question
           this.chatList.map(item => {
             if (this.mdRegex.test(item.answer)) {
@@ -301,7 +304,8 @@ export default {
           this.$refs.sendText.setConversationId(this.chatList[0].conversationId)
           let scrollElem = this.$refs.chatScroll;
           this.$refs.content.setScrollElem(scrollElem)
-          this.$refs.content.logPage(this.chatList[0].conversationId)
+          //设置聊天框的聊天记录
+          this.$refs.content.setLogPage(this.newChatList)
         } else {
           const obj = {
             disabled: true,
