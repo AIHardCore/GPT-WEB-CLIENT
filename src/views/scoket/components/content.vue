@@ -132,6 +132,13 @@ export default {
         });
       })
     },
+    setLogPage(newChatList) {
+      this.chatLists = newChatList;
+      this.$nextTick(() => {
+        this.scrollElem.scrollTo({ top: this.scrollElem.scrollHeight, behavior: 'smooth' });
+        this.isOpen = false;
+      });
+    },
     logPageMore(conversationId,pageNumber) {
       this.$loading('.chat_right');
       let flag = false;
