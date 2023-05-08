@@ -118,6 +118,16 @@
     </el-drawer>
     <NoticeModal ref="notice">
     </NoticeModal>
+    <el-dialog
+        title="提示"
+        :visible.sync="dialogVisibles"
+        width="60%">
+      <span>剩余次数不足,是否进行充值？</span>
+      <span slot="footer" class="dialog-footer">
+        <el-button size="mini" @click="dialogVisibles  = false">取 消</el-button>
+        <el-button size="mini" type="primary" @click="showMessageBox">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -153,6 +163,7 @@ export default {
       chatLists: [],
       kitList: [],
       chatListses: [],
+      newChatList:[],
       direction: 'ltr',
       chatList: [],
       oldScrollTop: 0,
@@ -289,6 +300,10 @@ export default {
       this.chatLists = data.data.chatLists
       this.drawer = data.show
       this.$store.commit('SET_OPEN', data.show)
+    },
+    showMessageBox() {
+      this.dialogVisibles = false;
+      this.$router.push('/user/product')
     }
   }
 }

@@ -46,7 +46,7 @@ export default {
     }
   },
   watch: {
-    chatLists: {
+    chatList: {
       handler(val) {
         this.chatListss = val
         this.obj.messages = val
@@ -70,7 +70,7 @@ export default {
   },
   mounted() {
     this.phone = JSON.parse(window.localStorage.getItem('phone'))
-    this.chatListss = this.chatLists
+    this.chatListss = this.chatList
     window.localStorage.setItem('messages', JSON.stringify(this.chatListss))
     this.getTypes()
   },
@@ -101,15 +101,16 @@ export default {
           role: 'user'
         }
         this.$emit('title', this.sendText)
+        if (!this.obj.messages){
+          this.obj.messages = []
+        }
         this.obj.messages.push(send)
         this.sendText = ''
-
         setTimeout(() => {
           this.disabled = true
           this.$https('CHAT', this.obj).then(res => {
             if (res.code == 20000) {
               this.chatListss.push(res.data.choices[0].message)
-              debugger
               if (this.userInfo.type == 0 && num > 0){
                 num = num - 1
               }
@@ -117,12 +118,9 @@ export default {
               this.disabled = false
               this.$emit('total', num)
               setTimeout(() => {
+                debugger
                 window.localStorage.setItem('logId', res.data.logId)
                 window.localStorage.setItem('newMessages', JSON.stringify(this.chatListss))
-                // this.$https('REPEST', {
-                //   logId: window.localStorage.getItem('logId'),
-                //   newMessages: window.localStorage.getItem('newMessages')
-                // }).then(res => {})
               }, 500)
             } else {
               const objs = {
@@ -131,7 +129,7 @@ export default {
               }
               const index = res.msg.indexOf('_')
               const logId = res.msg.substring(index + 1, res.msg.length)
-              window.localStorage.setItem('logId', logId)
+              //window.localStorage.setItem('logId', logId)
               this.chatListss.push(objs)
               setTimeout(() => {
                 window.localStorage.setItem('newMessages', JSON.stringify(this.chatListss))

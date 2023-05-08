@@ -86,11 +86,11 @@
           <template
             slot-scope="scope">
             <span
-              v-if="scope.row.payType == 'alipay'">支付宝支付</span>
+              v-if="scope.row.payType == 'ALI_PAY'">支付宝支付</span>
             <span
-              v-else-if="scope.row.payType == 'wxpay'">微信支付</span>
+              v-else-if="scope.row.payType == 'WX_PAY'">微信支付</span>
             <span
-              v-else-if="scope.row.payType == 'qqpay'">QQ钱包</span>
+              v-else-if="scope.row.payType == 'QQ_PAY'">QQ钱包</span>
           </template>
         </el-table-column>
         <el-table-column
@@ -170,11 +170,11 @@
               <div
                 class="value">
                 <span
-                  v-if="item.payType == 'alipay'">支付宝支付</span>
+                  v-if="item.payType == 'ALI_PAY'">支付宝支付</span>
                 <span
-                  v-else-if="item.payType == 'wxpay'">微信支付</span>
+                  v-else-if="item.payType == 'WX_PAY'">微信支付</span>
                 <span
-                  v-else-if="item.payType == 'qqpay'">QQ钱包</span>
+                  v-else-if="item.payType == 'QQ_PAY'">QQ钱包</span>
               </div>
             </div>
             <div
@@ -223,12 +223,14 @@
     <PayModal ref="showPay"
       @payType="payFun">
     </PayModal>
-
+    <PayInfo ref="showPayInfo"
+             @payType="payAgainFun">
+    </PayInfo>
   </div>
 </template>
 
 <script>
-import wx from 'http://res.wx.qq.com/open/js/jweixin-1.6.0.js'
+import wx from 'weixin-js-sdk';
 import PayModal from './components/payModal.vue'
 export default {
   components: { PayModal },
@@ -261,17 +263,32 @@ export default {
     payFun(data) {
       this.$message.success('正在发起支付...')
       this.$https('PAY', data).then(res => {
-        if (res.status == 200) {
+        console.log("result",res)
+        this.wxPay(res)
+      })
+    },
+    payAgainFun(data) {
+      this.$message.success('正在发起支付...')
+      this.$https('PAY_AGAIN', data).then(res => {
+        console.log("result",res)
+        this.wxPay(res)
+      })
+    },
+    wxPay(res) {
+      if (res.status == 200) {
+        if (res.data.code){
+          this.$message.warning(res.data.msg)
+        }else {
           // 调起微信支付
           let that = this;
-          let { appId, nonceStr, timeStamp, sign } = res.data;
+          let { appId, nonceStr, timeStamp, paySign } = res.data;
           let prepayId = res.data.package;
           wx.config({
             debug: true, // 测试阶段可用 true 打包返回给后台用 false
             appId: appId,
             timestamp: timeStamp,
             nonceStr: nonceStr,
-            signature: sign,
+            signature: paySign,
             jsApiList: ['chooseWXPay']
           });
           wx.ready(function(){
@@ -281,30 +298,32 @@ export default {
               nonceStr: nonceStr, // 随机字符串
               package: prepayId, // 统一支付接口返回的prepay_id参数值
               signType: 'MD5', //  签名方式，默认为'SHA1'，使用新版支付需传入'MD5'
-              paySign: sign, // 支付签名
+              paySign: paySign, // 支付签名
               success: function (res) {
                 that.Toast('支付成功');
+                this.$message.success('支付成功')
+                setTimeout(() => {
+                  location.reload();
+                  this.$router.go(0);
+                }, 2000)
               },
               cancel: function (res) {
                 that.Toast('支付取消');
+                this.$message.warning('支付取消')
               },
               fail: function (res) {
                 that.Toast('支付失败');
+                this.$message.error('支付失败')
               }
             });
           });
-          this.$https('getType', {}).then(res => {
-            if (data.type == 2 && res.data.type !== 1) {
-              this.$alert('只有月卡用户可以购买加油包', '提示')
-            } else {
-              this.$refs.showPay.open(data)
-            }
-          })
-          console.log(this.form)
-        } else {
-          this.$message.warning(res.msg)
         }
-      })
+        console.log(this.form)
+      } else if(res.status == 50001){
+        this.$router.push('/auth')
+      } else {
+        this.$message.warning(res.msg)
+      }
     },
     openPay(data, index) {
       console.log(data, index)

@@ -149,16 +149,16 @@
           @click="reg"
           style="width:350px;margin-top:30px">已有账号，立即登录</el-button>
     </div>
-    <div id="app">
+<!--    <div id="app">
       <router-view />
       <div style="position:fixed;text-align:center;bottom:0;margin:0 auto;width:100%;color: #5c6b77">
         <a
             target="_blank"
             style="color: #5c6b77"
-            href="https://beian.miit.gov.cn/">京ICP备00000001</a>
+            href="https://beian.miit.gov.cn/">粤ICP备2023047455号-1</a>
         &nbsp; @2023-2024 HardCore
       </div>
-    </div>
+    </div>-->
   </div>
 </template>
 

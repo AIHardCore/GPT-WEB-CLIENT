@@ -92,6 +92,7 @@
           剩余：{{userInfos.remainingTimes}}次
         </div>
         <div
+          v-if="userInfos.type != 1"
           style="font-size: 13px;color:#999999;margin-top: 5px;">
           今日剩余：{{ userInfos.dayRemainingTimes }}次
         </div>
@@ -120,7 +121,8 @@ export default {
     return {
       phone: false,
       isActive: 0,
-      userInfos: {}
+      userInfos: {},
+      index: 0
     }
   },
   mounted() {
@@ -137,7 +139,7 @@ export default {
     chatList: {
       handler(val) {
         if (val && val.length > 0) {
-          this.chatLists = val[0]
+          this.chatLists = val[this.index]
         }
       },
       deep: true
@@ -146,7 +148,7 @@ export default {
       this.userInfos = val
     },
     total(val) {
-      if (this.userInfos.type == 0) {
+      if (this.userInfos.type == 1) {
         this.userInfos.remainingTimes = val
       } else {
         this.userInfos.dayRemainingTimes = val
@@ -174,6 +176,7 @@ export default {
     openWindow(item, index) {
       this.isActive = index
       this.$emit('changeChat', { data: index, show: false })
+      this.index = index;
     },
     del(item, index) {
       this.chatList.splice(index, 1)

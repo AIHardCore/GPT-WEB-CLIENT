@@ -67,7 +67,7 @@ import { marked } from 'marked'
 import 'highlight.js/styles/devibeans.css'
 
 export default {
-  props: ['chatList', 'isChat', 'isChats','menuChatList'],
+  props: ['chatList', 'chatIndex', 'isChats','menuChatList'],
   data() {
     return {
       phone: false,
@@ -75,7 +75,6 @@ export default {
       chatLists: [],
       chatObj: {},
       scrollElem:null,
-      isOpen: true,
     }
   },
   watch: {
@@ -84,30 +83,19 @@ export default {
         if (val.length > 0) {
           this.chatObj = {}
           this.chatObj = val[0]
-          if (!this.isOpen){
-            this.chatLists = val
-          }
+          this.chatLists = val
         }
       },
       deep: true
     },
-    isChat(val) {
-      console.log(val)
+    chatIndex(val) {
       this.chatObj = {}
       this.chatObj = this.chatList[val]
-      this.logPage(this.menuChatList[val].conversationId)
-      // if (this.mdRegex.test(this.chatObj.answer)) {
-      //   this.chatObj.answer = marked(this.chatObj.answer)
-      // }
       this.$forceUpdate()
     },
     isChats(val) {
       this.chatObj = {}
       this.chatObj = this.chatList[val]
-      this.logPage(this.menuChatList[val].conversationId)
-      // if (this.mdRegex.test(this.chatObj.answer)) {
-      //   this.chatObj.answer = marked(this.chatObj.answer)
-      // }
     },
   },
   mounted() {
@@ -129,7 +117,6 @@ export default {
         this.chatLists = res.data.logPage.records;
         this.$nextTick(() => {
           this.scrollElem.scrollTo({ top: this.scrollElem.scrollHeight, behavior: 'smooth' });
-          this.isOpen = false;
         });
         this.$emit('updateLoadState',true,1);
       })
@@ -139,7 +126,6 @@ export default {
       this.chatLists = newChatList;
       this.$nextTick(() => {
         this.scrollElem.scrollTo({ top: this.scrollElem.scrollHeight, behavior: 'smooth' });
-        this.isOpen = false;
       });
     },
     logPageMore(conversationId,pageNumber) {

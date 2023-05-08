@@ -88,11 +88,12 @@
           </template>
         </div>
         <div
-          v-if="userInfos.type == 0"
+          v-if="userInfos.type == 1"
           style="font-size: 13px;color:#999999;margin-top: 5px;">
           剩余：{{userInfos.remainingTimes}}次
         </div>
         <div
+          v-if="userInfos.type != 1"
           style="font-size: 13px;color:#999999;margin-top: 5px;">
           今日剩余：{{ userInfos.dayRemainingTimes }}次
         </div>

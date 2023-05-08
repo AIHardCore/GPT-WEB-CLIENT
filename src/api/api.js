@@ -11,9 +11,14 @@ export const baseUrl = 'https://gpt.v-wim.xyz-a-s'
 let protocol = window.location.protocol;
 let host = window.location.hostname;
 if (host.indexOf("localhost") == -1 && host.indexOf("127.0.0.1") == -1){
-  host = host + "/gpt";
+  if (host.indexOf("aihardcore.cn") > -1){
+    host = host + "/gpt/api";
+  }else {
+    host = host + "/gpt";
+  }
 }else {
   host = host + ":8000";
+  //host = "ihardcore.cn/gpt";
 }
 export const baseUrl = protocol + '//' + host;
 
@@ -25,6 +30,7 @@ export const HTTP_URI = {
   GETCODE: baseUrl + '/user/token/smsCode',
   REGISTER: baseUrl + '/user/token/register',
   LOGIN: baseUrl + '/user/token/login',
+  WXLOGIN: baseUrl + '/user/token/wxlogin',
   PRODUCT: baseUrl + '/product/list',
   USERHOME: baseUrl + '/user/token/home',
   CHAT: baseUrl + '/v1/chat/turbo',
@@ -36,6 +42,7 @@ export const HTTP_URI = {
   PAY: baseUrl + '/order/create',
   PAY_AGAIN: baseUrl + '/order/pay',
   CANVAS: baseUrl + '/v1/chat/official',
-  WXGZHINFO: baseUrl + '/wx/gzhInfo'
+  WXGZHINFO: baseUrl + '/wx/gzhInfo',
+  GETOPENID: baseUrl + '/wx/getOpenid',
 }
 export default { HTTP_URI, baseUrl }

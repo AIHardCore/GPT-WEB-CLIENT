@@ -23,22 +23,38 @@ export default {
       form: {
         url: ''
       },
-      code: undefined
+      code: undefined,
     }
   },
   mounted() {
-    let code = this.$route.query.code
+    let code = ''
+    let index = window.location.href.indexOf('?')
+    let paramStr =window.location.href.substring(index+1,window.location.href.length);
+    let params = paramStr.split('&')
+    params.forEach(element => {
+      if (element.indexOf('code') >= 0) {
+        code = element.substring(element.indexOf('=')+1,element.length)
+      }
+    });
     if (code){
       this.code = code
       this.login()
+    }else {
+      this.auth(code)
     }
-    this.auth(code)
   },
   methods: {
+    _isMobile() {
+      let flag = navigator.userAgent.match(
+          /(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i
+      )
+      return flag
+    },
     login() {
-      this.$https('LOGIN',{
+      this.$https('WXLOGIN',{
         code: this.code
       }).then(res => {
+        this.$message.success(res.msg)
         if (res.code == 50000){
           this.$message.success(res.msg)
           return;
@@ -52,8 +68,21 @@ export default {
           window.localStorage.setItem('phone', false)
         }
         setTimeout(() => {
+          let index = window.location.href.indexOf('?')
+          let href =window.location.href.substring(0,index);
+          window.history.replaceState(null, null, href);
           this.$router.push('/')
         }, 2000)
+      })
+    },
+    openid() {
+      this.$https('GETOPENID',{
+        code: this.code
+      }).then(res => {
+        if (res.code == 50000){
+          this.$message.success(res.msg)
+        }
+        this.$router.push('/user/product')
       })
     },
     auth(code) {

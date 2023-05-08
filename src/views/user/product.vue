@@ -1,55 +1,55 @@
 <template>
   <div class="contentes">
     <el-card
-      class="product_box"
-      :class="{'pc':phone?false:true}">
+        class="product_box"
+        :class="{'pc':phone?false:true}">
       <div>商品列表</div>
       <el-row :gutter="20">
         <el-col :md="8"
-          :sm="12" :xs="24"
-          v-for="(item,index) in list"
-          :key="index">
+                :sm="12" :xs="24"
+                v-for="(item,index) in list"
+                :key="index">
           <el-card
-            class="cards"
-            @click="openPay(item,1)"
-            :style="{'background':item.type == 0 ?'rgba(255,0,0,.05)':(item.type == 1?'rgba(0,255,0,.05)':'rgba(255,168,0,.05)')}">
+              class="cards"
+              @click="openPay(item,1)"
+              :style="{'background':item.type == 0 ?'rgba(255,0,0,.05)':(item.type == 1?'rgba(0,255,0,.05)':'rgba(255,168,0,.05)')}">
             <div
-              class="item name"
-              :style="{'background-color':item.type == 0 ?'rgba(255,0,0,.8)':(item.type == 1?'rgba(0,255,0,.8)':'rgba(255,168,0,.8)'),'font-size':'12px'}">
+                class="item name"
+                :style="{'background-color':item.type == 0 ?'rgba(255,0,0,.8)':(item.type == 1?'rgba(0,255,0,.8)':'rgba(255,168,0,.8)'),'font-size':'12px'}">
               {{ item.name }}(剩余:
               {{  item.stock}})
             </div>
             <div
-              style="display: flex;justify-content: center;align-items: center;">
+                style="display: flex;justify-content: center;align-items: center;">
               <div
-                @click="openPay(item,2)"
-                class="item price"
-                :style="{'color':item.type == 0 ?'red':(item.type == 1?'green':'orange')}">
+                  @click="openPay(item,2)"
+                  class="item price"
+                  :style="{'color':item.type == 0 ?'red':(item.type == 1?'green':'orange')}">
                 ￥{{ item.price }}
               </div>
               <div
-                @click="openPay(item,2)"
-                class="item wd"
-                v-if="item.type !== 1">
+                  @click="openPay(item,2)"
+                  class="item wd"
+                  v-if="item.type !== 1">
                 {{ item.numberTimes }}次问答
               </div>
               <div
-                @click="openPay(item,2)"
-                class="item wd"
-                v-if="item.type == 1">
+                  @click="openPay(item,2)"
+                  class="item wd"
+                  v-if="item.type == 1">
                 每日上限{{ item.monthlyNumber }}次问答
               </div>
             </div>
 
             <div
-              @click="openPay(item,2)"
-              class="item remark"
-              style="font-size: 12px;"
-              v-if="item.type == 5">
+                @click="openPay(item,2)"
+                class="item remark"
+                style="font-size: 12px;"
+                v-if="item.type == 5">
               仅限月卡用户使用，有效期一天
             </div>
             <div class="ceng"
-              @click="openPay(item,1)">
+                 @click="openPay(item,1)">
             </div>
           </el-card>
         </el-col>
@@ -57,101 +57,101 @@
     </el-card>
 
     <form id='paying'
-      :action='url'
-      method='post'>
+          :action='url'
+          method='post'>
       <input type='hidden'
-        name='money'
-        :value='form.money' />
+             name='money'
+             :value='form.money' />
       <input type='hidden'
-        name='name'
-        :value='form.name' />
+             name='name'
+             :value='form.name' />
       <input type='hidden'
-        name='notify_url'
-        :value='form.notify_url' />
+             name='notify_url'
+             :value='form.notify_url' />
       <input type='hidden'
-        name='out_trade_no'
-        :value='form.out_trade_no' />
+             name='out_trade_no'
+             :value='form.out_trade_no' />
       <input type='hidden'
-        name='pid'
-        :value='form.pid' />
+             name='pid'
+             :value='form.pid' />
       <input type='hidden'
-        name='return_url'
-        :value='form.return_url' />
+             name='return_url'
+             :value='form.return_url' />
       <input type='hidden'
-        name='type'
-        :value='form.type' />
+             name='type'
+             :value='form.type' />
       <input type='hidden'
-        name='sign_type'
-        :value='form.sign_type' />
+             name='sign_type'
+             :value='form.sign_type' />
       <input type='hidden'
-        name='sign'
-        :value='form.sign' />
+             name='sign'
+             :value='form.sign' />
       <input type='submit'
-        v-show=" false"
-        value='正在跳转'>
+             v-show=" false"
+             value='正在跳转'>
     </form>
     <el-card
-      style="margin-top: 20px;"
-      class="product_box"
-      :class="{'pc':phone?false:true}">
+        style="margin-top: 20px;"
+        class="product_box"
+        :class="{'pc':phone?false:true}">
       <div
-        style="margin-bottom: 10px;">
+          style="margin-bottom: 10px;">
         订单列表</div>
       <el-table v-if="!phone"
-        :header-cell-style="{
+                :header-cell-style="{
         background: '#EEF1F6',
         color: 'rgba(41,44,53,0.7)',
       }" :data="tableData"
-        style="width: 100%">
+                style="width: 100%">
         <el-table-column
-          prop="id"
-          label="订单编号">
+            prop="id"
+            label="订单编号">
         </el-table-column>
         <el-table-column
-          prop="productName"
-          label="名称">
+            prop="productName"
+            label="名称">
         </el-table-column>
         <el-table-column
-          prop="price"
-          label="价格">
+            prop="price"
+            label="价格">
         </el-table-column>
         <el-table-column
-          label="支付方式">
+            label="支付方式">
           <template
-            slot-scope="scope">
+              slot-scope="scope">
             <span
-              v-if="scope.row.payType == 'alipay'">支付宝支付</span>
+                v-if="scope.row.payType == 'ALI_PAY'">支付宝支付</span>
             <span
-              v-else-if="scope.row.payType == 'wxpay'">微信支付</span>
+                v-else-if="scope.row.payType == 'WX_PAY'">微信支付</span>
             <span
-              v-else-if="scope.row.payType == 'qqpay'">QQ钱包</span>
+                v-else-if="scope.row.payType == 'QQ_PAY'">QQ钱包</span>
           </template>
         </el-table-column>
         <el-table-column
-          label="支付状态">
+            label="支付状态">
           <template
-            slot-scope="scope">
+              slot-scope="scope">
             <span
-              v-if="scope.row.state == '0'">
+                v-if="scope.row.state == '0'">
               <el-tag
-                type="info">待支付</el-tag>
+                  type="info">待支付</el-tag>
             </span>
             <span
-              v-else-if="scope.row.state == '1'">
+                v-else-if="scope.row.state == '1'">
               <el-tag
-                type="success">支付完成</el-tag>
+                  type="success">支付完成</el-tag>
             </span>
             <span
-              v-else-if="scope.row.state == '2'">
+                v-else-if="scope.row.state == '2'">
               <el-tag
-                type="danger">支付失败</el-tag>
+                  type="danger">支付失败</el-tag>
             </span>
           </template>
         </el-table-column>
         <el-table-column
-          prop="createTime"
-          width="180"
-          label="支付时间">
+            prop="createTime"
+            width="180"
+            label="支付时间">
         </el-table-column>
         <el-table-column
             label="操作">
@@ -163,86 +163,86 @@
       </el-table>
       <div v-if="phone">
         <el-card
-          :body-style="{ padding: '0px' }"
-          v-for="(item,index) in tableData"
-          :key="index"
-          class="cardss">
+            :body-style="{ padding: '0px' }"
+            v-for="(item,index) in tableData"
+            :key="index"
+            class="cardss">
           <div
-            class="card_body">
+              class="card_body">
             <div
-              class="items">
+                class="items">
               <div
-                class="label">
+                  class="label">
                 订单编号：
               </div>
               <div
-                class="value">
-                {{ item.id }}
+                  class="value">
+                {{ item.tradeNo }}
               </div>
             </div>
             <div
-              class="items">
+                class="items">
               <div
-                class="label">
+                  class="label">
                 订单名称：
               </div>
               <div
-                class="value">
+                  class="value">
                 {{ item.productName }}
               </div>
             </div>
             <div
-              class="items">
+                class="items">
               <div
-                class="label">
+                  class="label">
                 商品价格：
               </div>
               <div
-                class="value">
+                  class="value">
                 {{ item.price }}
               </div>
             </div>
             <div
-              class="items">
+                class="items">
               <div
-                class="label">
+                  class="label">
                 支付方式：
               </div>
               <div
-                class="value">
+                  class="value">
                 <span
-                  v-if="item.payType == 'alipay'">支付宝支付</span>
+                    v-if="item.payType == 'ALI_PAY'">支付宝支付</span>
                 <span
-                  v-else-if="item.payType == 'wxpay'">微信支付</span>
+                    v-else-if="item.payType == 'WX_PAY'">微信支付</span>
                 <span
-                  v-else-if="item.payType == 'qqpay'">QQ钱包</span>
+                    v-else-if="item.payType == 'QQ_PAY'">QQ钱包</span>
               </div>
             </div>
             <div
-              class="items">
+                class="items">
               <div
-                class="label">
+                  class="label">
                 支付状态：
               </div>
               <div
-                class="value">
+                  class="value">
                 <span
-                  v-if="item.state == '0'">
+                    v-if="item.state == '0'">
                   <el-tag
-                    size="mini"
-                    type="info">待支付</el-tag>
+                      size="mini"
+                      type="info">待支付</el-tag>
                 </span>
                 <span
-                  v-else-if="item.state == '1'">
+                    v-else-if="item.state == '1'">
                   <el-tag
-                    size="mini"
-                    type="success">支付完成</el-tag>
+                      size="mini"
+                      type="success">支付完成</el-tag>
                 </span>
                 <span
-                  v-else-if="item.state == '2'">
+                    v-else-if="item.state == '2'">
                   <el-tag
-                    size="mini"
-                    type="danger">支付失败</el-tag>
+                      size="mini"
+                      type="danger">支付失败</el-tag>
                 </span>
               </div>
               <div v-if="item.state == '0'">
@@ -252,13 +252,13 @@
               </div>
             </div>
             <div
-              class="items">
+                class="items">
               <div
-                class="label">
+                  class="label">
                 支付时间：
               </div>
               <div
-                class="value">
+                  class="value">
                 {{ item.createTime }}
               </div>
             </div>
@@ -267,16 +267,17 @@
       </div>
     </el-card>
     <PayModal ref="showPay"
-      @payType="payFun">
+              @payType="payFun">
     </PayModal>
     <PayInfo ref="showPayInfo"
-      @payType="payAgainFun">
+             @payType="payAgainFun">
     </PayInfo>
 
   </div>
 </template>
 
 <script>
+import wx from 'weixin-js-sdk';
 import PayModal from './components/payModal.vue'
 import PayInfo from './components/payInfo.vue'
 export default {
@@ -314,54 +315,67 @@ export default {
     payFun(data) {
       this.$message.success('正在发起支付...')
       this.$https('PAY', data).then(res => {
-        if (res.status == 200) {
-          this.url = res.data.url
-          this.form = {
-            money: `${res.data.money}`,
-            name: res.data.name,
-            notify_url: res.data.notifyUrl,
-            out_trade_no: res.data.outTradeNo,
-            pid: `${res.data.pid}`,
-            type: res.data.type,
-            sign: res.data.sign,
-            sign_type: res.data.signType,
-            return_url: res.data.returnUrl
-          }
-          console.log(this.form)
-          // return
-          setTimeout(() => {
-            document.forms['paying'].submit()
-          }, 500)
-        } else {
-          this.$message.warning(res.msg)
-        }
+        console.log("result",res)
+        this.wxPay(res)
       })
     },
     payAgainFun(data) {
       this.$message.success('正在发起支付...')
       this.$https('PAY_AGAIN', data).then(res => {
-        if (res.status == 200) {
-          this.url = res.data.url
-          this.form = {
-            money: `${res.data.money}`,
-            name: res.data.name,
-            notify_url: res.data.notifyUrl,
-            out_trade_no: res.data.outTradeNo,
-            pid: `${res.data.pid}`,
-            type: res.data.type,
-            sign: res.data.sign,
-            sign_type: res.data.signType,
-            return_url: res.data.returnUrl
-          }
-          console.log(this.form)
-          // return
-          setTimeout(() => {
-            document.forms['paying'].submit()
-          }, 500)
-        } else {
-          this.$message.warning(res.msg)
-        }
+        console.log("result",res)
+        this.wxPay(res)
       })
+    },
+    wxPay(res) {
+      if (res.status == 200) {
+        if (res.data.code){
+          this.$message.warning(res.data.msg)
+        }else {
+          // 调起微信支付
+          let that = this;
+          let { appId, nonceStr, timeStamp, paySign } = res.data;
+          let prepayId = res.data.package;
+          wx.config({
+            debug: false, // 测试阶段可用 true 打包返回给后台用 false
+            appId: appId,
+            timestamp: timeStamp,
+            nonceStr: nonceStr,
+            signature: paySign,
+            jsApiList: ['chooseWXPay']
+          });
+          wx.ready(function(){
+            wx.chooseWXPay({
+              appId: appId,
+              timestamp: timeStamp, // 时间戳
+              nonceStr: nonceStr, // 随机字符串
+              package: prepayId, // 统一支付接口返回的prepay_id参数值
+              signType: 'MD5', //  签名方式，默认为'SHA1'，使用新版支付需传入'MD5'
+              paySign: paySign, // 支付签名
+              success: function (res) {
+                that.Toast('支付成功');
+                this.$message.success('支付成功')
+                setTimeout(() => {
+                  location.reload();
+                  this.$router.go(0);
+                }, 2000)
+              },
+              cancel: function (res) {
+                that.Toast('支付取消');
+                this.$message.warning('支付取消')
+              },
+              fail: function (res) {
+                that.Toast('支付失败');
+                this.$message.error('支付失败')
+              }
+            });
+          });
+        }
+        console.log(this.form)
+      } else if(res.status == 50001){
+        this.$router.push('/auth')
+      } else {
+        this.$message.warning(res.msg)
+      }
     },
     openPay(data, index) {
       console.log(data, index)

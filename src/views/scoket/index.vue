@@ -29,7 +29,7 @@
         <div
           class="chat_right" ref="chatScroll" v-on:wxj="updateLoadState">
           <Content ref="content"
-            :isChat="isChat"
+            :chatIndex="chatIndex"
             :isChats="isChats"
             @updateLoadState="updateLoadState"
             :chatList="newChatList"
@@ -49,6 +49,7 @@
               @click="changeChats(1)"
               src="../../assets/chat_icon.png"
               class="icon">
+            1
           </el-tooltip>
           <el-tooltip
             class="item"
@@ -59,16 +60,21 @@
               @click="changeChats(3)"
               src="../../assets/picture.png"
               class="icon">
+            2
           </el-tooltip>
           <el-tooltip
             class="item"
             effect="dark"
             content="充值"
             placement="top-start">
-            <img
-              @click="changeChats(2)"
-              src="../../assets/pay_2.png"
-              class="icon">
+            <div
+                style="font-size: 12px;color:#999999" >
+              <img
+                  @click="changeChats(2)"
+                  src="../../assets/pay_2.png"
+                  class="icon">
+              <div class="tips">充值</div>
+            </div>
           </el-tooltip>
           <span
             style="right: 30px;position: absolute;"
@@ -84,8 +90,9 @@
         <SendText ref="sendText"
           @sendText="sendTexts"
           @ok="getData"
-          :isChat="isChat"
-          :chatList="newChatList"
+          :chatIndex="chatIndex"
+          :chatList="chatList"
+          :newChatList="newChatList"
           :userInfo="userInfo"
           @total="total">
         </SendText>
@@ -146,7 +153,7 @@ export default {
       kitList: [],
       scrollFlag: false,
       loading: false,
-      isChat: 0,
+      chatIndex: 0,
       isChats: 0,
       conversationObj: 0,
       direction: 'ltr',
@@ -190,6 +197,7 @@ export default {
     },
     arr: {
       handler(val) {
+        debugger
         this.loading = false
         this.isChats = val.length
         this.chatList[this.currMenuIndex].answer = ''
@@ -229,7 +237,17 @@ export default {
       if (e.data.indexOf("剩余次数不足,请充值") > -1){
         this.dialogVisibles = true;
       }
-      this.arr.push(e.data)
+      //开始回答
+      if (e.data == "&BEGIN&"){
+        let num = this.$store.state.total
+        if (num > 0){
+          num = num - 1
+        }
+        this.$store.commit('SET_TOTAL', num)
+        this.totals = num;
+      }else{
+        this.arr.push(e.data)
+      }
     },
     webSocketClose(e) {
       this.scoketText = '断开连接'
@@ -312,7 +330,7 @@ export default {
           const obj = {
             disabled: true,
             question: 'New Chat',
-            answer: ''
+            answer: '',
           }
           this.chatList.push(obj)
         }
@@ -324,7 +342,7 @@ export default {
           remainingTimes: res.data.remainingTimes,
           type: res.data.type
         }
-        if (res.data.type == 0) {
+        if (res.data.type == 1) {
           this.totals = res.data.remainingTimes;
           this.$store.commit('SET_TOTAL', res.data.remainingTimes)
         } else {
@@ -380,8 +398,10 @@ export default {
       this.pageNumber = 1
       this.currMenuIndex = data.data
       this.drawer = data.show
-      this.isChat = data.data
+      this.chatIndex = data.data
       this.$store.commit('SET_OPEN', data.show)
+      //加载最后一页聊天记录
+      this.logPage(this.chatList[this.currMenuIndex].conversationId)
     },
     showMessageBox() {
       this.dialogVisibles = false;
@@ -464,6 +484,12 @@ export default {
   padding-left: 20px;
   .icon {
     width: 20px;
+    margin: 0 10px;
+    cursor: pointer;
+    filter: grayscale(100%);
+  }
+  .tips {
+    width: 24px;
     margin: 0 10px;
     cursor: pointer;
     filter: grayscale(100%);

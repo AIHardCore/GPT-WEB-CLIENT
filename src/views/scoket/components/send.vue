@@ -30,7 +30,7 @@
 
 <script>
 export default {
-  props: ['chatList','isChat','userInfo'],
+  props: ['chatList','newChatList','chatIndex','userInfo'],
   data() {
     return {
       phone: false,
@@ -46,7 +46,7 @@ export default {
     }
   },
   watch: {
-    chatList: {
+    newChatList: {
       handler(val) {
         this.chatListss = val
         this.obj.messages = val
@@ -54,7 +54,7 @@ export default {
         this.disabled = false
       }
     },
-    isChat(val){
+    chatIndex(val){
       this.conversationId =  this.chatList[val].conversationId
     }
   },
@@ -84,7 +84,6 @@ export default {
       })
     },
     sendChat(e) {
-      let num = this.$store.state.total
       this.obj.logId = ''
       if (window.localStorage.getItem('logId')) {
         this.obj.logId = window.localStorage.getItem('logId')
@@ -92,6 +91,7 @@ export default {
         this.obj.logId = ''
       }
       if (this.sendText) {
+        console.log(this.conversationId)
         const obj = {
           question: this.sendText,
           content: this.sendText,
@@ -101,12 +101,7 @@ export default {
         }
         this.$emit('sendText', obj)
         this.sendText = ''
-        if (this.userInfo.type == 0 && num > 0){
-          num = num - 1
-        }
-        this.$store.commit('SET_TOTAL', num)
         this.disabled = false
-        this.$emit('total', num)
       } else {
         this.$message.error('请输入')
       }

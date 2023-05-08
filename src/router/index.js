@@ -73,7 +73,7 @@ export const routes = [
 
 const router = new VueRouter({
   mode: 'hash',
-  // mode: 'history',
+  //mode: 'history',
   base: process.env.BASE_URL,
   routes
 })
@@ -82,19 +82,38 @@ router.beforeEach((to, from, next) => {
   if (to.path == '/auth') {
     next()
   } else if (to.path !== '/login') {
-    let token = window.localStorage.getItem('token')
-    if (!token) {
-      next('/login')
-    } else {
-      // const userInfo = JSON.parse(window.localStorage.getItem('userInfo'))
+    let code = ''
+    let index = window.location.href.indexOf('?')
+    let paramStr =window.location.href.substring(index+1,window.location.href.length);
+    let params = paramStr.split('&')
+    params.forEach(element => {
+      if (element.indexOf('code') >= 0) {
+        code = element.substring(element.indexOf('=')+1,element.length)
+      }
+    });
+    if (code){
+      next({
+        path: '/auth',
+        query: {
+          code: to.query.code,
+          state: to.query.state,
+        }
+      })
+    }else {
+      let token = window.localStorage.getItem('token')
+      if (!token) {
+        next('/auth')
+      } else {
+        // const userInfo = JSON.parse(window.localStorage.getItem('userInfo'))
 
-      // if (userInfo.mobile !== 'admin') {
-      //   next('/user/index')
-      // } else {
-      //   next()
-      // }
-      document.title = to.meta.title
-      next()
+        // if (userInfo.mobile !== 'admin') {
+        //   next('/user/index')
+        // } else {
+        //   next()
+        // }
+        document.title = to.meta.title
+        next()
+      }
     }
   } else if (to.path == '/login') {
     next()
