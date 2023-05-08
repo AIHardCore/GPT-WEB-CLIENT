@@ -24,7 +24,7 @@
         prop="payNumber">
         <el-input
           type="Number"
-          @input="(e) => (ruleForm.payNumber = integerFn(e))"
+          disabled = "true"
           v-model="ruleForm.payNumber"></el-input>
       </el-form-item>
       <el-form-item
@@ -32,6 +32,7 @@
         prop="type">
         <el-select
           v-model="ruleForm.type"
+          disabled = "true"
           style="width:100%"
           placeholder="请选择支付方式">
           <el-option
@@ -81,29 +82,30 @@ export default {
       width: '400px',
       phone: false,
       options: [
-        {
+        /*{
           icon: require('@/assets/qq.png'),
           name: 'QQ钱包',
           type: 'qqpay'
-        },
+        },*/
         {
           icon: require('@/assets/wx.png'),
           name: '微信支付',
           type: 'wxpay'
         },
-        {
+        /*{
           icon: require('@/assets/pay.png'),
           name: '支付宝支付',
           type: 'alipay'
-        }
+        }*/
       ]
     }
   },
   methods: {
     open(data) {
       this.dialogVisible = true
-      this.ruleForm.productId = data.id
-      this.ruleForm.type = 'wxpay'
+      this.ruleForm.orderId = data.id
+      this.ruleForm.type = data.payType
+      this.ruleForm.payNumber = data.payNumber
       this.phone = JSON.parse(window.localStorage.getItem('phone'))
       this.position = this.phone ? 'top' : 'right'
     },
@@ -112,7 +114,7 @@ export default {
       this.dialogVisible = false
       this.ruleForm = {
         payNumber: 1,
-        type: 'wxpay',
+        type: '',
         productId: ''
       }
     },
@@ -123,29 +125,7 @@ export default {
           this.handleClose()
         }
       })
-    },
-    /**
-     * 只能输入大于0的正整数（不能以0开头）
-     * @param {string} value
-     * @returns {string | number} 返回空字符或数字
-     */
-    integerFn(value) {
-      let reg = /[1-9]{1}[0-9]*$/;
-      let strArray = value.split("");
-      let newStrs = "";
-      for (let i = 0; i < strArray.length; i++) {
-        if (reg.test(strArray[i])) {
-          newStrs += strArray[i];
-        } else if (i > 0 && strArray[i] === "0") {
-          newStrs += strArray[i];
-        }
-      }
-      if (newStrs - 0 > 0) {
-        return newStrs - 0;
-      } else {
-        return 1;
-      }
-    },
+    }
   }
 }
 </script>

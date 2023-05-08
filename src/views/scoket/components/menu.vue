@@ -50,7 +50,7 @@
       :class="{'phone':phone?true:false}">
       <div class="lefts">
         <el-avatar
-          src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"></el-avatar>
+            :src="require('@/assets/user_avatar.png')"></el-avatar>
       </div>
       <div class="center"
         style="text-align: left;margin-left: -50px;">
@@ -58,11 +58,23 @@
           style="font-size: #666;">
           {{ userInfo.name }}
           <el-tag size="mini"
-            v-if="userInfo.type == 0"
+            v-if="userInfo.type == 1"
             type="info">普</el-tag>
           <el-tag size="mini"
-            v-if="userInfo.type == 1"
+            v-if="userInfo.type == 2"
             type="warning">月</el-tag>
+          <el-tag size="mini"
+            v-if="userInfo.type == 3"
+            type="warning">季</el-tag>
+          <el-tag size="mini"
+            v-if="userInfo.type == 4"
+            type="warning">年</el-tag>
+          <el-tag size="mini"
+            v-if="userInfo.type == 5"
+            type="warning">终</el-tag>
+          <el-tag size="mini"
+            v-if="userInfo.type == -1"
+            type="warning">管理</el-tag>
           <template
             v-if="kitList && kitList.length > 0">
             <el-tag

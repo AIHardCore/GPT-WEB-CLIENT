@@ -37,15 +37,15 @@
                 @click="openPay(item,2)"
                 class="item wd"
                 v-if="item.type == 1">
-                上限{{ item.monthlyNumber }}次问答
+                每日上限：{{ item.monthlyNumber }}次问答
               </div>
             </div>
 
             <div
-              @click="openPay(item,2)"
+              @click="openPay(item,5)"
               class="item remark"
               style="font-size: 12px;"
-              v-if="item.type == 2">
+              v-if="item.type == 5">
               仅限月卡用户使用，有效期一天
             </div>
             <div class="ceng"
@@ -118,6 +118,15 @@
         <el-table-column
           prop="payType"
           label="支付方式">
+          <template
+            slot-scope="scope">
+            <span
+              v-if="scope.row.payType == 'alipay'">支付宝支付</span>
+            <span
+              v-else-if="scope.row.payType == 'wxpay'">微信支付</span>
+            <span
+              v-else-if="scope.row.payType == 'qqpay'">QQ钱包</span>
+          </template>
         </el-table-column>
         <el-table-column
           label="支付状态">
@@ -144,6 +153,13 @@
           prop="createTime"
           width="180"
           label="支付时间">
+        </el-table-column>
+        <el-table-column
+            label="操作">
+          <template
+              slot-scope="scope">
+            <el-button v-if="scope.row.state == '0'" size="mini" type="primary" @click="pay(scope.row)">去支付</el-button>
+          </template>
         </el-table-column>
       </el-table>
       <div v-if="phone">
@@ -231,6 +247,11 @@
                 </span>
               </div>
             </div>
+            <div v-if="item.state == '0'">
+                <span>
+                  <el-button size="mini" type="primary" @click="pay(item)">去支付</el-button>
+                </span>
+            </div>
             <div
               class="items">
               <div
@@ -256,15 +277,19 @@
     <Qrcode ref="qrcode"
       @handleClose="handleClose">
     </Qrcode>
+    <PayInfo ref="showPayInfo"
+             @payType="payAgainFun">
+    </PayInfo>
   </div>
 </template>
 
 <script>
 import PayModal from './components/payModal.vue'
+import PayInfo from './components/payInfo.vue'
 import AliPayModal from './components/payModalAli.vue'
 import Qrcode from './components/qrcode.vue'
 export default {
-  components: { PayModal, AliPayModal, Qrcode },
+  components: { PayModal, AliPayModal, Qrcode, PayInfo},
   data() {
     return {
       phone: false,
@@ -289,6 +314,9 @@ export default {
         window.localStorage.setItem('productList', JSON.stringify(res.data.productList))
         window.localStorage.setItem('orderList', JSON.stringify(res.data.orderList))
       })
+    },
+    pay(data){
+      this.$refs.showPayInfo.open(data)
     },
     handleClose() {
       this.getData()
@@ -321,6 +349,54 @@ export default {
     payFun(data) {
       this.$message.success('正在发起支付...')
       this.$https('PAY', data).then(res => {
+        if (res.status == 200) {
+          // 调起微信支付
+          let that = this;
+          let { appId, nonceStr, timeStamp, sign } = res.data;
+          let prepayId = res.data.package;
+          wx.config({
+            debug: true, // 测试阶段可用 true 打包返回给后台用 false
+            appId: appId,
+            timestamp: timeStamp,
+            nonceStr: nonceStr,
+            signature: sign,
+            jsApiList: ['chooseWXPay']
+          });
+          wx.ready(function(){
+            wx.chooseWXPay({
+              appId: appId,
+              timestamp: timeStamp, // 时间戳
+              nonceStr: nonceStr, // 随机字符串
+              package: prepayId, // 统一支付接口返回的prepay_id参数值
+              signType: 'MD5', //  签名方式，默认为'SHA1'，使用新版支付需传入'MD5'
+              paySign: sign, // 支付签名
+              success: function (res) {
+                that.Toast('支付成功');
+              },
+              cancel: function (res) {
+                that.Toast('支付取消');
+              },
+              fail: function (res) {
+                that.Toast('支付失败');
+              }
+            });
+          });
+          this.$https('getType', {}).then(res => {
+            if (data.type == 2 && res.data.type !== 1) {
+              this.$alert('只有月卡用户可以购买加油包', '提示')
+            } else {
+              this.$refs.showPay.open(data)
+            }
+          })
+          console.log(this.form)
+        } else {
+          this.$message.warning(res.msg)
+        }
+      })
+    },
+    payAgainFun(data) {
+      this.$message.success('正在发起支付...')
+      this.$https('PAY_AGAIN', data).then(res => {
         if (res.status == 200) {
           this.url = res.data.url
           this.form = {

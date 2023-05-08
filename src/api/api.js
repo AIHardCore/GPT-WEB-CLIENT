@@ -8,10 +8,16 @@ export const baseUrl = 'https://gpt.v-wim.xyz-a-s'
  * @LastEditTime: 2023-05-06 10:41:06
  * @FilePath: /chat_gpt/src/api/api.js
  */
-// export const baseUrl = 'https://gpt.v-wim.xyz'
-export const baseUrl = 'https://gpt.v-wim.xyz'
-export const wsUrl = 'wss://gpt.v-wim.xyz'
-// export const wsUrl = 'wss://ca1a-61-176-96-198.ngrok-free.app'
+let protocol = window.location.protocol;
+let host = window.location.hostname;
+if (host.indexOf("localhost") == -1 && host.indexOf("127.0.0.1") == -1){
+  host = host + "/gpt";
+}else {
+  host = host + ":8000";
+}
+export const baseUrl = protocol + '//' + host;
+
+export const wsUrl = (protocol + '//' + host).replace("http", "ws").replace("https", "wss");
 
 // export const baseUrl = 'http://ee9qu3.natappfree.cc'
 export const HTTP_URI = {
@@ -37,6 +43,8 @@ export const HTTP_URI = {
   EMAILREG: baseUrl + '/user/token/register/email',
   SENDMAILCODE: baseUrl + '/user/token/send/mail',
   GETMODE: baseUrl + '/sd/getModel',
-  GETMODES: baseUrl + '/sd/getSamplers'
+  GETMODES: baseUrl + '/sd/getSamplers',
+  PAY_AGAIN: baseUrl + '/order/pay',
+  WXGZHINFO: baseUrl + '/wx/gzhInfo',
 }
 export default { HTTP_URI, baseUrl }
