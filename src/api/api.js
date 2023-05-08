@@ -11,9 +11,14 @@ export const baseUrl = 'https://gpt.v-wim.xyz-a-s'
 let protocol = window.location.protocol;
 let host = window.location.hostname;
 if (host.indexOf("localhost") == -1 && host.indexOf("127.0.0.1") == -1){
-  host = host + "/gpt";
+  if (host.indexOf("aihardcore.cn") > -1){
+    host = host + "/gpt/api";
+  }else {
+    host = host + "/gpt";
+  }
 }else {
   host = host + ":8000";
+  //host = "ihardcore.cn/gpt";
 }
 export const baseUrl = protocol + '//' + host;
 
@@ -24,20 +29,19 @@ export const HTTP_URI = {
   BASEURL: baseUrl,
   REGISTER: baseUrl + '/user/token/register',
   LOGIN: baseUrl + '/user/token/login',
+  WXLOGIN: baseUrl + '/user/token/wxlogin',
   PRODUCT: baseUrl + '/product/list',
-  ALIPAY: baseUrl + '/order/ali/create',
   USERHOME: baseUrl + '/user/token/home',
   CHAT: baseUrl + '/v1/chat/turbo',
   getType: baseUrl + '/user/token/getType',
+  LOGGAGE: baseUrl + '/use/log/queryPage',
   REPEST: baseUrl + '/use/log/updateLog',
   ADD: baseUrl + '/use/log/resetLog',
   NOTICELIST: baseUrl + '/announcement/queryPage',
   PAY: baseUrl + '/order/create',
-  CANVAS: baseUrl + '/v1/chat/official',
-  REGTYPE: baseUrl + '/user/token/get/register/method',
-  GETCODE: baseUrl + '/user/token/send/msg',
-  CODEREG: baseUrl + '/user/token/register/msm',
   PAY_AGAIN: baseUrl + '/order/pay',
+  CANVAS: baseUrl + '/v1/chat/official',
   WXGZHINFO: baseUrl + '/wx/gzhInfo',
+  GETOPENID: baseUrl + '/wx/getOpenid',
 }
 export default { HTTP_URI, baseUrl }

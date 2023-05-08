@@ -84,17 +84,17 @@ export default {
         {
           icon: require('@/assets/qq.png'),
           name: 'QQ钱包',
-          type: 'qqpay'
+          type: 'QQ_PAY'
         },
         {
           icon: require('@/assets/wx.png'),
           name: '微信支付',
-          type: 'wxpay'
+          type: 'WX_PAY'
         },
         {
           icon: require('@/assets/pay.png'),
           name: '支付宝支付',
-          type: 'alipay'
+          type: 'ALI_PAY'
         }
       ]
     }
@@ -103,7 +103,7 @@ export default {
     open(data) {
       this.dialogVisible = true
       this.ruleForm.productId = data.id
-      this.ruleForm.type = 'wxpay'
+      this.ruleForm.type = 'WX_PAY'
       this.phone = JSON.parse(window.localStorage.getItem('phone'))
       this.position = this.phone ? 'top' : 'right'
     },
@@ -112,7 +112,7 @@ export default {
       this.dialogVisible = false
       this.ruleForm = {
         payNumber: 1,
-        type: 'wxpay',
+        type: 'WX_PAY',
         productId: ''
       }
     },

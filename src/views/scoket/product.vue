@@ -56,40 +56,6 @@
       </el-row>
     </el-card>
 
-    <form id='paying'
-      :action='url'
-      method='post'>
-      <input type='hidden'
-        name='money'
-        :value='form.money' />
-      <input type='hidden'
-        name='name'
-        :value='form.name' />
-      <input type='hidden'
-        name='notify_url'
-        :value='form.notify_url' />
-      <input type='hidden'
-        name='out_trade_no'
-        :value='form.out_trade_no' />
-      <input type='hidden'
-        name='pid'
-        :value='form.pid' />
-      <input type='hidden'
-        name='return_url'
-        :value='form.return_url' />
-      <input type='hidden'
-        name='type'
-        :value='form.type' />
-      <input type='hidden'
-        name='sign_type'
-        :value='form.sign_type' />
-      <input type='hidden'
-        name='sign'
-        :value='form.sign' />
-      <input type='submit'
-        v-show=" false"
-        value='正在跳转'>
-    </form>
     <el-card
       style="margin-top: 20px;"
       class="product_box"
@@ -120,11 +86,11 @@
           <template
             slot-scope="scope">
             <span
-              v-if="scope.row.payType == 'alipay'">支付宝支付</span>
+              v-if="scope.row.payType == 'ALI_PAY'">支付宝支付</span>
             <span
-              v-else-if="scope.row.payType == 'wxpay'">微信支付</span>
+              v-else-if="scope.row.payType == 'WX_PAY'">微信支付</span>
             <span
-              v-else-if="scope.row.payType == 'qqpay'">QQ钱包</span>
+              v-else-if="scope.row.payType == 'QQ_PAY'">QQ钱包</span>
           </template>
         </el-table-column>
         <el-table-column
@@ -211,11 +177,11 @@
               <div
                 class="value">
                 <span
-                  v-if="item.payType == 'alipay'">支付宝支付</span>
+                  v-if="item.payType == 'ALI_PAY'">支付宝支付</span>
                 <span
-                  v-else-if="item.payType == 'wxpay'">微信支付</span>
+                  v-else-if="item.payType == 'WX_PAY'">微信支付</span>
                 <span
-                  v-else-if="item.payType == 'qqpay'">QQ钱包</span>
+                  v-else-if="item.payType == 'QQ_PAY'">QQ钱包</span>
               </div>
             </div>
             <div
@@ -276,6 +242,7 @@
 </template>
 
 <script>
+import wx from 'weixin-js-sdk';
 import PayModal from './components/payModal.vue'
 import PayInfo from './components/payInfo.vue'
 export default {
@@ -285,15 +252,10 @@ export default {
       phone: false,
       url: '',
       list: [],
-      form: {},
       tableData: []
     }
   },
   mounted() {
-    let tradeStatus = this.$route.query.trade_status
-    if (tradeStatus === "TRADE_SUCCESS"){
-      this.$message.success('支付成功！')
-    }
     this.phone = JSON.parse(window.localStorage.getItem('phone'))
     this.getData()
   },
@@ -312,17 +274,30 @@ export default {
     payFun(data) {
       this.$message.success('正在发起支付...')
       this.$https('PAY', data).then(res => {
-        if (res.status == 200) {
+        this.wxPay(res)
+      })
+    },
+    payAgainFun(data) {
+      this.$message.success('正在发起支付...')
+      this.$https('PAY_AGAIN', data).then(res => {
+        this.wxPay(res)
+      })
+    },
+    wxPay(res) {
+      if (res.status == 200) {
+        if (res.data.code){
+          this.$message.warning(res.data.msg)
+        }else {
           // 调起微信支付
           let that = this;
-          let { appId, nonceStr, timeStamp, sign } = res.data;
+          let { appId, nonceStr, timeStamp, paySign } = res.data;
           let prepayId = res.data.package;
           wx.config({
-            debug: true, // 测试阶段可用 true 打包返回给后台用 false
+            debug: false, // 测试阶段可用 true 打包返回给后台用 false
             appId: appId,
             timestamp: timeStamp,
             nonceStr: nonceStr,
-            signature: sign,
+            signature: paySign,
             jsApiList: ['chooseWXPay']
           });
           wx.ready(function(){
@@ -332,64 +307,40 @@ export default {
               nonceStr: nonceStr, // 随机字符串
               package: prepayId, // 统一支付接口返回的prepay_id参数值
               signType: 'MD5', //  签名方式，默认为'SHA1'，使用新版支付需传入'MD5'
-              paySign: sign, // 支付签名
+              paySign: paySign, // 支付签名
               success: function (res) {
+                this.handleClose();
                 that.Toast('支付成功');
+                this.$message.success('支付成功')
+                setTimeout(() => {
+                  location.reload();
+                  this.$router.go(0);
+                }, 2000)
               },
               cancel: function (res) {
                 that.Toast('支付取消');
+                this.$message.warning('支付取消')
               },
               fail: function (res) {
                 that.Toast('支付失败');
+                this.$message.error('支付失败')
               }
             });
           });
-          this.$https('getType', {}).then(res => {
-            if (data.type == 2 && res.data.type !== 1) {
-              this.$alert('只有月卡用户可以购买加油包', '提示')
-            } else {
-              this.$refs.showPay.open(data)
-            }
-          })
-          console.log(this.form)
-        } else {
-          this.$message.warning(res.msg)
         }
-      })
+      } else if(res.status == 50001){
+        this.$router.push('/auth')
+      } else {
+        this.$message.warning(res.msg)
+      }
     },
     openPay(data, index) {
       console.log(data, index)
       this.$https('getType', {}).then(res => {
-        if (data.type == 2 && res.data.type !== 1) {
+        if (data.type == 5 && res.data.type == 1) {
           this.$alert('只有月卡用户可以购买加油包', '提示')
         } else {
           this.$refs.showPay.open(data)
-        }
-      })
-    },
-    payAgainFun(data) {
-      this.$message.success('正在发起支付...')
-      this.$https('PAY_AGAIN', data).then(res => {
-        if (res.status == 200) {
-          this.url = res.data.url
-          this.form = {
-            money: `${res.data.money}`,
-            name: res.data.name,
-            notify_url: res.data.notifyUrl,
-            out_trade_no: res.data.outTradeNo,
-            pid: `${res.data.pid}`,
-            type: res.data.type,
-            sign: res.data.sign,
-            sign_type: res.data.signType,
-            return_url: res.data.returnUrl
-          }
-          console.log(this.form)
-          // return
-          setTimeout(() => {
-            document.forms['paying'].submit()
-          }, 500)
-        } else {
-          this.$message.warning(res.msg)
         }
       })
     },
@@ -489,7 +440,7 @@ export default {
         font-size: 13px;
         white-space: nowrap;
         text-overflow: ellipsis;
-        width: calc(100% - 80px);
+        width: calc(80% - 80px);
       }
     }
   }

@@ -79,21 +79,41 @@ const router = new VueRouter({
 })
 // 全局路由构造函数，判断是否登录和要跳转到页面
 router.beforeEach((to, from, next) => {
-  console.log(to.path)
-  if (to.path !== '/login') {
-    let token = window.localStorage.getItem('token')
-    if (!token) {
-      next('/auth')
-    } else {
-      // const userInfo = JSON.parse(window.localStorage.getItem('userInfo'))
+  if (to.path == '/auth') {
+    next()
+  } else if (to.path !== '/login') {
+    let code = ''
+    let index = window.location.href.indexOf('?')
+    let paramStr =window.location.href.substring(index+1,window.location.href.length);
+    let params = paramStr.split('&')
+    params.forEach(element => {
+      if (element.indexOf('code') >= 0) {
+        code = element.substring(element.indexOf('=')+1,element.length)
+      }
+    });
+    if (code){
+      next({
+        path: '/auth',
+        query: {
+          code: to.query.code,
+          state: to.query.state,
+        }
+      })
+    }else {
+      let token = window.localStorage.getItem('token')
+      if (!token) {
+        next('/auth')
+      } else {
+        // const userInfo = JSON.parse(window.localStorage.getItem('userInfo'))
 
-      // if (userInfo.mobile !== 'admin') {
-      //   next('/user/index')
-      // } else {
-      //   next()
-      // }
-      document.title = to.meta.title
-      next()
+        // if (userInfo.mobile !== 'admin') {
+        //   next('/user/index')
+        // } else {
+        //   next()
+        // }
+        document.title = to.meta.title
+        next()
+      }
     }
   } else if (to.path == '/login') {
     next()

@@ -24,11 +24,13 @@
           class="chat_box ">
           <div v-highlight
             class="markdown-body"
+            style="white-space: pre-wrap;"
             v-if="index < chatListes.length - 1 "
             v-html="item.content">
           </div>
           <div v-else
             class="markdown-body"
+            style="white-space: pre-wrap;"
             v-highlight
             v-html="obj.output">
           </div>

@@ -74,14 +74,6 @@
           @reglogins="reglogins"
           v-if="regs== 2">
         </simcodeVue>
-        <div v-if="regs== 3">
-          <img
-            :src="require('../assets/erweima.jpg')"
-            style="width: 310px;">
-          <div
-            style="text-align:center">
-            关注公众号开通账号</div>
-        </div>
       </el-card>
       <el-button
         v-if="showPage"
@@ -126,7 +118,8 @@ export default {
         if (valid) {
           this.$https('LOGIN', this.form).then(res => {
             if (res.status != 200) {
-              this.$alert(res.message, '提示')
+              debugger
+              this.$alert(res.msg, '提示')
             } else {
               window.localStorage.setItem('userInfo', JSON.stringify(res.data))
               window.localStorage.setItem('token', res.data.token)

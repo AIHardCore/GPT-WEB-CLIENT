@@ -108,14 +108,65 @@ export default {
       this.chatObj = this.chatList[0]
     }
   },
-  methods: {}
+  methods: {
+    logPage(conversationId) {
+      this.$https('LOGGAGE', {
+        conversationId: conversationId,
+        pageNumber: 1,
+        pageSize: 5
+      }).then(res => {
+        this.chatLists = res.data.logPage.records;
+        this.$nextTick(() => {
+          this.scrollElem.scrollTo({ top: this.scrollElem.scrollHeight, behavior: 'smooth' });
+        });
+        this.$emit('updateLoadState',true,1);
+      })
+    },
+    setLogPage(newChatList,scrollElem) {
+      this.scrollElem = scrollElem
+      this.chatLists = newChatList;
+      this.$nextTick(() => {
+        this.scrollElem.scrollTo({ top: this.scrollElem.scrollHeight, behavior: 'smooth' });
+      });
+    },
+    logPageMore(conversationId,pageNumber) {
+      pageNumber++;
+      this.$loading('.chat_right');
+      let flag = false;
+      setTimeout(() => {
+        this.$https('LOGGAGE', {
+          conversationId: conversationId,
+          pageNumber: pageNumber,
+          pageSize: 5
+        }).then(res => {
+          if (res.data.logPage.records.length > 0){
+            for (let i = 1; i <= res.data.logPage.records.length; i++){
+              this.chatLists.unshift(res.data.logPage.records[res.data.logPage.records.length-i]);
+            }
+            this.$nextTick(() => {
+              this.scrollElem.scrollTo({ top: 10, behavior: 'smooth' });
+              this.$emit('updateLoadState',flag,pageNumber);
+            });
+            flag = true;
+          }
+        })
+        setTimeout(() => {
+          this.$emit('updateLoadState',flag,pageNumber);
+        }, 500)
+      }, 500)
+    },
+
+    setScrollElem(scrollElem) {
+      this.scrollElem = scrollElem;
+    },
+  }
 }
 </script>
 
 <style>
 .tx {
-  width: 40px;
-  height: 40px;
+  width: 30px;
+  height: 30px;
 }
 .chat_box {
   max-width: calc(100vw - 490px) !important;

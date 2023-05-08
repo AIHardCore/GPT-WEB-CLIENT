@@ -28,7 +28,7 @@
           </Menu>
         </div>
         <div
-          class="chat_right">
+            class="chat_right">
           <Content
             v-if="isActive == 0"
             :chatLists="chatLists">
@@ -341,8 +341,8 @@ export default {
           flex-grow: 1;
           margin-top: 20px;
           .tx {
-            width: 40px;
-            height: 40px;
+            width: 30px;
+            height: 30px;
             margin-left: 10px;
             border-radius: 10px;
             overflow: hidden;

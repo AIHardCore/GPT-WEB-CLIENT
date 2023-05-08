@@ -27,7 +27,7 @@
           </Menu>
         </div>
         <div
-          class="chat_right">
+          class="chat_right" ref="chatScroll" v-on:wxj="updateLoadState">
           <Content
             :isChat="isChat"
             :isChats="isChats"
@@ -170,7 +170,7 @@ export default {
   mounted() {
     this.mdRegex = /[#*`|]/
     this.phone = JSON.parse(window.localStorage.getItem('phone'))
-    document.querySelector('.box').addEventListener('scroll', this.scrolling)
+    document.querySelector('.chat_right').addEventListener('scroll', this.scrolling)
     this.getData()
     this.initWebSocket()
   },
@@ -218,12 +218,20 @@ export default {
       if (e.data.indexOf("剩余次数不足,请充值") > -1){
         this.dialogVisibles = true;
       }
-      if (e.data.includes('\n')) {
+      if (e.data == "&BEGIN&"){
+        let num = this.$store.state.total
+        if (num > 0){
+          num = num - 1
+        }
+        this.$store.commit('SET_TOTAL', num)
+        this.totals = num;
+      }else if (e.data.includes('\n')) {
         let str = `${e.data.replace(/\n/g, '<br/>')}`
         this.arr.push(str)
       } else {
         this.arr.push(e.data)
       }
+
       // this.arr.push(e.data)
     },
     webSocketClose(e) {
@@ -233,7 +241,7 @@ export default {
       this.reconnect()
     },
     webSocketOnError(e) {
-      this.$message.error('报错信息', e)
+      this.$message.error('服务器开小差了，等下再试试吧', e)
     },
     webSocketSend(Data) {
       //发送数据发送
@@ -310,6 +318,12 @@ export default {
         }
       })
     },
+    updateLoadState(flag,pageNumber){
+      if (flag){
+        this.pageNumber = pageNumber;
+      }
+      this.loadLogFinish = true;
+    },
     close(data) {
       this.drawer = data
       this.$store.commit('SET_OPEN', data)
@@ -335,6 +349,10 @@ export default {
       if (scrollStep < 0) {
         //向上
         this.scrollFlag = false
+        if (scrollTop <= 0 && this.loadLogFinish){
+          this.loadLogFinish = false;
+          //this.$refs.content.logPageMore(this.chatList[this.currMenuIndex].conversationId,this.pageNumber)
+        }
       } else {
         this.scrollFlag = true
       }
@@ -343,6 +361,9 @@ export default {
       this.totals = data
     },
     changeChat(data) {
+      this.loadLogFinish = false;
+      this.pageNumber = 1
+      this.currMenuIndex = data.data
       this.drawer = data.show
       this.isChat = data.data
       this.$store.commit('SET_OPEN', data.show)
@@ -428,6 +449,12 @@ export default {
   padding-left: 20px;
   .icon {
     width: 20px;
+    margin: 0 10px;
+    cursor: pointer;
+    filter: grayscale(100%);
+  }
+  .tips {
+    width: 24px;
     margin: 0 10px;
     cursor: pointer;
     filter: grayscale(100%);

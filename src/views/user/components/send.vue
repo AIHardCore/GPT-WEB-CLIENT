@@ -77,7 +77,7 @@ export default {
     getTypes() {
       this.$https('getType', {}).then(res => {
         this.obj.type = res.data.type
-        if (res.type == 1) this.num = res.data.dayRemainingTimes
+        if (res.type > 1) this.num = res.data.dayRemainingTimes
         else this.num = res.data.remainingTimes
         setTimeout(() => {
           if (this.num == 0) {
@@ -108,7 +108,9 @@ export default {
           this.$https('CHAT', this.obj).then(res => {
             if (res.code == 20000) {
               this.chatListss.push(res.data.choices[0].message)
-              num = num - 1
+              if (num > 0){
+                num = num - 1
+              }
               this.$store.commit('SET_TOTAL', num)
               this.disabled = false
               this.$emit('total', num)
