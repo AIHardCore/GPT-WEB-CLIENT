@@ -315,7 +315,7 @@ export default {
     border: 1px solid #e6e6e6;
     border-radius: 10px;
     overflow: hidden !important;
-    width: calc(100vw - 30px) !important;
+    width: 100vw !important;
     height: calc(100vh - 60px) !important;
     position: relative;
     .main_home {
