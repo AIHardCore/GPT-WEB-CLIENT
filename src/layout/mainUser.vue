@@ -31,7 +31,7 @@
         <span
           @click="$refs.layout.open()">
           <el-avatar
-              :src="require('@/assets/user_avatar.png')"></el-avatar>
+              :src="this.$common.headImg()"></el-avatar>
         </span>
       </div>
     </div>

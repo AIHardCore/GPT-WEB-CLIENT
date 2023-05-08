@@ -50,7 +50,7 @@
       :class="{'phone':phone?true:false}">
       <div class="lefts">
         <el-avatar
-          :src="require('@/assets/user_avatar.png')"></el-avatar>
+          :src="this.$common.headImg()"></el-avatar>
       </div>
       <div class="center"
         style="text-align: left;margin-left: -50px;">

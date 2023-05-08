@@ -11,6 +11,7 @@ import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
 import store from './store'
+import common from './store/common'
 import hljs from 'highlight.js'
 import SlideVerify from 'vue-monoplasty-slide-verify'
 
@@ -22,6 +23,7 @@ import { wsUrl } from '@/api/api'
 Vue.config.productionTip = false
 Vue.prototype.wsUrl = wsUrl
 Vue.prototype.$https = REQUEST.POST
+Vue.prototype.$common = common
 Vue.use(SlideVerify)
 Vue.use(ElementUI)
 Vue.use(hljs)
@@ -52,5 +54,6 @@ Vue.directive('highlight', el => {
 new Vue({
   router,
   store,
+  common,
   render: h => h(App)
 }).$mount('#app')

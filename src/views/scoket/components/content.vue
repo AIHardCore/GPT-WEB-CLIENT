@@ -24,7 +24,7 @@
         </div>
         <div class="tx">
           <img
-            :src="require('@/assets/user_avatar.png')"
+            :src="this.$common.headImg()"
             style="width:30px;height:30px">
         </div>
       </div>
@@ -70,7 +70,8 @@ export default {
       phone: false,
       mdRegex: '',
       chatLists: [],
-      chatObj: {}
+      chatObj: {},
+      userInfo:'',
     }
   },
   watch: {
