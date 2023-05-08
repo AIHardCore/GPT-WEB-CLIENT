@@ -8,10 +8,16 @@ export const baseUrl = 'https://gpt.v-wim.xyz-a-s'
  * @LastEditTime: 2023-04-17 13:53:33
  * @FilePath: /chat_gpt/src/api/api.js
  */
-export const baseUrl = 'https://gpt.v-wim.xyz'
-// export const baseUrl = 'http://103.106.189.148:8624'
-export const wsUrl = 'wss://gpt.v-wim.xyz'
-// export const wsUrl = 'ws://103.106.189.148:8624'
+let protocol = window.location.protocol;
+let host = window.location.hostname;
+if (host.indexOf("localhost") == -1 && host.indexOf("127.0.0.1") == -1){
+  host = host + "/gpt";
+}else {
+  host = host + ":8000";
+}
+export const baseUrl = protocol + '//' + host;
+
+export const wsUrl = (protocol + '//' + host).replace("http", "ws").replace("https", "wss");
 
 // export const baseUrl = 'http://ee9qu3.natappfree.cc'
 export const HTTP_URI = {
@@ -30,6 +36,8 @@ export const HTTP_URI = {
   CANVAS: baseUrl + '/v1/chat/official',
   REGTYPE: baseUrl + '/user/token/get/register/method',
   GETCODE: baseUrl + '/user/token/send/msg',
-  CODEREG: baseUrl + '/user/token/register/msm'
+  CODEREG: baseUrl + '/user/token/register/msm',
+  PAY_AGAIN: baseUrl + '/order/pay',
+  WXGZHINFO: baseUrl + '/wx/gzhInfo',
 }
 export default { HTTP_URI, baseUrl }

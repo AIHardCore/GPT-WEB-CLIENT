@@ -19,6 +19,11 @@ export const routes = [
     component: () => import('../views/login.vue')
   },
   {
+    path: '/auth',
+    name: 'auth',
+    component: () => import('../views/auth.vue')
+  },
+  {
     path: '/',
     name: '客户端',
     type: 'user',
@@ -78,7 +83,7 @@ router.beforeEach((to, from, next) => {
   if (to.path !== '/login') {
     let token = window.localStorage.getItem('token')
     if (!token) {
-      next('/login')
+      next('/auth')
     } else {
       // const userInfo = JSON.parse(window.localStorage.getItem('userInfo'))
 

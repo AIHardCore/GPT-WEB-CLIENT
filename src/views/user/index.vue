@@ -9,7 +9,9 @@
 -->
 <template>
   <div class="contents">
-    <div class="body">
+    <div class="body" :class="{
+      'phone':phone?true:false
+    }">
       <Notice :notice="notice"
         @open="open">
       </Notice>
@@ -54,23 +56,23 @@
           <el-tooltip
             class="item"
             effect="dark"
-            content="画图"
-            placement="top-start">
-            <img
-              @click="changeChats(1)"
-              :class="{'active':isActive == 1}"
-              src="../../assets/picture.png"
-              class="icon">
-          </el-tooltip>
-          <el-tooltip
-            class="item"
-            effect="dark"
             content="即时通讯"
             placement="top-start">
             <img
               @click="changeChats(2)"
               :class="{'active':isActive == 2}"
               src="../../assets/chats_icon.png"
+              class="icon">
+          </el-tooltip>
+          <el-tooltip
+            class="item"
+            effect="dark"
+            content="画图"
+            placement="top-start">
+            <img
+              @click="changeChats(1)"
+              :class="{'active':isActive == 1}"
+              src="../../assets/picture.png"
               class="icon">
           </el-tooltip>
           <el-tooltip
@@ -116,6 +118,16 @@
     </el-drawer>
     <NoticeModal ref="notice">
     </NoticeModal>
+    <el-dialog
+        title="提示"
+        :visible.sync="dialogVisibles"
+        width="60%">
+      <span>剩余次数不足,是否进行充值？</span>
+      <span slot="footer" class="dialog-footer">
+        <el-button size="mini" @click="dialogVisibles  = false">取 消</el-button>
+        <el-button size="mini" type="primary" @click="showMessageBox">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -153,7 +165,8 @@ export default {
       chatList: [],
       oldScrollTop: 0,
       phone: false,
-      notice: ''
+      notice: '',
+      loadLogFinish: true,
     }
   },
   created() {},
@@ -237,9 +250,11 @@ export default {
           remainingTimes: res.data.remainingTimes,
           type: res.data.type
         }
-        if (res.data.type == 0) {
+        if (res.data.type == 1) {
+          this.totals = res.data.remainingTimes;
           this.$store.commit('SET_TOTAL', res.data.remainingTimes)
         } else {
+          this.totals = res.data.dayRemainingTimes;
           this.$store.commit('SET_TOTAL', res.data.dayRemainingTimes)
         }
       })
@@ -286,6 +301,10 @@ export default {
       this.chatLists = data.data.chatLists
       this.drawer = data.show
       this.$store.commit('SET_OPEN', data.show)
+    },
+    showMessageBox() {
+      this.dialogVisibles = false;
+      this.$router.push('/user/product')
     }
   }
 }
@@ -295,9 +314,9 @@ export default {
   .body {
     border: 1px solid #e6e6e6;
     border-radius: 10px;
-    overflow: hidden;
-    width: calc(100vw - 30px);
-    height: calc(100vh - 80px);
+    overflow: hidden !important;
+    width: calc(100vw - 30px) !important;
+    height: calc(100vh - 60px) !important;
     position: relative;
     .main_home {
       display: flex;

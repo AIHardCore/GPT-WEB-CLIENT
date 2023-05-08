@@ -115,6 +115,16 @@
     </el-drawer>
     <NoticeModal ref="notice">
     </NoticeModal>
+    <el-dialog
+        title="提示"
+        :visible.sync="dialogVisibles"
+        width="60%">
+      <span>剩余次数不足,是否进行充值？</span>
+      <span slot="footer" class="dialog-footer">
+        <el-button size="mini" @click="dialogVisibles  = false">取 消</el-button>
+        <el-button size="mini" type="primary" @click="showMessageBox">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -151,7 +161,8 @@ export default {
       phone: false,
       notice: '',
       arr: [],
-      mdRegex: ''
+      mdRegex: '',
+      loadLogFinish: true,
     }
   },
   created() {},
@@ -204,13 +215,16 @@ export default {
       console.log(e.data)
       //接收数据
       // this.lists.push(jsonObj.message)
-      // if (e.data.includes('\n')) {
-      //   let str = `${e.data.replace(/\n/g, '<br/>')}`
-      //   this.arr.push(str)
-      // } else {
-      //   this.arr.push(e.data)
-      // }
-      this.arr.push(e.data)
+      if (e.data.indexOf("剩余次数不足,请充值") > -1){
+        this.dialogVisibles = true;
+      }
+      if (e.data.includes('\n')) {
+        let str = `${e.data.replace(/\n/g, '<br/>')}`
+        this.arr.push(str)
+      } else {
+        this.arr.push(e.data)
+      }
+      // this.arr.push(e.data)
     },
     webSocketClose(e) {
       this.scoketText = '断开连接'
@@ -287,9 +301,11 @@ export default {
           remainingTimes: res.data.remainingTimes,
           type: res.data.type
         }
-        if (res.data.type == 0) {
+        if (res.data.type == 1) {
+          this.totals = res.data.remainingTimes;
           this.$store.commit('SET_TOTAL', res.data.remainingTimes)
         } else {
+          this.totals = res.data.dayRemainingTimes;
           this.$store.commit('SET_TOTAL', res.data.dayRemainingTimes)
         }
       })
@@ -330,6 +346,10 @@ export default {
       this.drawer = data.show
       this.isChat = data.data
       this.$store.commit('SET_OPEN', data.show)
+    },
+    showMessageBox() {
+      this.dialogVisibles = false;
+      this.$router.push('/user/product')
     }
   }
 }
@@ -366,8 +386,8 @@ export default {
           flex-grow: 1;
           margin-top: 20px;
           .tx {
-            width: 40px;
-            height: 40px;
+            width: 30px;
+            height: 30px;
             margin-left: 10px;
             border-radius: 10px;
             overflow: hidden;
@@ -382,10 +402,10 @@ export default {
           }
           .chat_box.phone {
             max-width: 60vw;
-            padding: 10px 20px;
+            padding: 10px 10px;
             background: #ffffff;
             border-radius: 5px;
-            margin: 0 10px;
+            margin: 0 0px;
           }
         }
       }

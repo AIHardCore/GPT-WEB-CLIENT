@@ -24,8 +24,8 @@
         </div>
         <div class="tx">
           <img
-            src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"
-            style="width:40px;height:40px">
+            :src="require('@/assets/user_avatar.png')"
+            style="width:30px;height:30px">
         </div>
       </div>
       <div class="items"
@@ -33,13 +33,14 @@
         <div class="tx">
           <img
             :src="require('@/assets/chat.png')"
-            style="width:40px;height:40px">
+            style="width:30px;height:30px">
         </div>
         <div
           v-if="!phone && chatObj.answer"
           class="chat_box">
           <div v-highlight
             class="markdown-body"
+            style="white-space: pre-wrap;"
             v-html="chatObj.answer">
           </div>
         </div>
@@ -47,6 +48,7 @@
           class="chat_box phone">
           <div v-highlight
             class="markdown-body"
+            style="white-space: pre-wrap;"
             v-html="chatObj.answer ">
           </div>
         </div>
@@ -82,7 +84,6 @@ export default {
       deep: true
     },
     isChat(val) {
-      console.log(val)
       this.chatObj = {}
       this.chatObj = this.chatList[val]
       // if (this.mdRegex.test(this.chatObj.answer)) {

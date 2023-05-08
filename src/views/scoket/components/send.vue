@@ -36,6 +36,7 @@ export default {
       phone: false,
       sendText: '',
       obj: {},
+      sendNum: 0,
       logId: '',
       num: 0,
       disabled: false,
@@ -51,6 +52,7 @@ export default {
         this.obj.messages = val
         window.localStorage.setItem('messages', JSON.stringify(val))
         this.disabled = false
+        this.sendNum = 0
       }
     }
   },
@@ -81,26 +83,29 @@ export default {
       })
     },
     sendChat(e) {
-      let num = this.$store.state.total
-      this.obj.logId = ''
-      if (window.localStorage.getItem('logId')) {
-        this.obj.logId = window.localStorage.getItem('logId')
-      } else {
-        this.obj.logId = ''
-      }
-      if (this.sendText) {
-        const obj = {
-          question: this.sendText,
-          answer: ``
+      this.sendNum += 1
+      if (this.sendNum < 2) {
+        let num = this.$store.state.total
+        if (this.sendText) {
+          const obj = {
+            question: this.sendText, // 获取发送文本框中的内容
+            answer: `` // 初始化回答为空
+          }
+          this.$emit('sendText', obj)
+          this.sendText = ''
+          num = num - 1
+          // 发送文本内容
+          // 清空发送框
+          // 数量减一
+          this.$store.commit('SET_TOTAL', num) // 在 Vuex 中提交 SET_TOTAL mutation，将 num 作为参数传递
+          this.disabled = false // 将 disabled 属性设置为 false，使按钮可用
+          this.$emit('total', num) // 触发 total 事件，并将 num 作为参数传递
+          setTimeout(() => {
+            this.sendNum = 0 // 2 秒后将 sendNum 属性设置为 0
+          }, 2000)
+        } else {
+          this.$message.error('请输入')
         }
-        this.$emit('sendText', obj)
-        this.sendText = ''
-        num = num - 1
-        this.$store.commit('SET_TOTAL', num)
-        this.disabled = false
-        this.$emit('total', num)
-      } else {
-        this.$message.error('请输入')
       }
     }
   }
