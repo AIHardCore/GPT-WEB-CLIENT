@@ -248,7 +248,6 @@ export default {
       if (e.data.indexOf("剩余次数不足,请充值") > -1){
         this.dialogVisibles = true;
       }
-      this.arr.push(e.data)
       if (e.data.includes('\n')) {
         let str = `${e.data.replace(/\n/g, '<br/>')}`
         this.arr.push(str)
