@@ -81,21 +81,21 @@ export default {
       width: '400px',
       phone: false,
       options: [
-        {
+        /*{
           icon: require('@/assets/qq.png'),
           name: 'QQ钱包',
           type: 'QQ_PAY'
-        },
+        },*/
         {
           icon: require('@/assets/wx.png'),
           name: '微信支付',
           type: 'WX_PAY'
         },
-        {
+        /*{
           icon: require('@/assets/pay.png'),
           name: '支付宝支付',
           type: 'ALI_PAY'
-        }
+        }*/
       ]
     }
   },

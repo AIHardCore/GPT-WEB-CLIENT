@@ -24,7 +24,7 @@
         prop="payNumber">
         <el-input
           type="Number"
-          disabled = "true"
+          disabled
           v-model="ruleForm.payNumber"></el-input>
       </el-form-item>
       <el-form-item
@@ -32,7 +32,7 @@
         prop="type">
         <el-select
           v-model="ruleForm.type"
-          disabled = "true"
+          disabled
           style="width:100%"
           placeholder="请选择支付方式">
           <el-option
@@ -90,7 +90,7 @@ export default {
         {
           icon: require('@/assets/wx.png'),
           name: '微信支付',
-          type: 'wxpay'
+          type: 'WX_PAY'
         },
         /*{
           icon: require('@/assets/pay.png'),
