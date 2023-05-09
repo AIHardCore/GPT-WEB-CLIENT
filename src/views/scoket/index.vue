@@ -11,9 +11,9 @@
   <div class="contents"
     v-loading="loading">
     <div class="body">
-      <Notice :notice="notice"
+<!--      <Notice :notice="notice"
         @open="open">
-      </Notice>
+      </Notice>-->
       <div class="main_home">
         <div class="left"
           v-if="!phone">
@@ -130,14 +130,14 @@
 
 <script>
 import { marked } from 'marked'
-import Notice from '@/components/notice.vue'
+//import Notice from '@/components/notice.vue'
 import Menu from './components/menu.vue'
 import NoticeModal from './components/noticeModal.vue'
 import Content from './components/content.vue'
 import SendText from './components/send.vue'
 export default {
   name: 'marquee',
-  components: { Notice, Menu, NoticeModal, Content, SendText },
+  components: { Menu, NoticeModal, Content, SendText },
   data() {
     return {
       list: [],

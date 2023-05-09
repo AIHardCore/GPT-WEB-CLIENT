@@ -16,7 +16,7 @@
           class="el-icon-s-fold"
           @click="toggle"></i>
       </div>
-      <div class="center"
+      <div class="header"
         style="padding-left: 20px;">
         <el-button
           v-if="$route.path !== '/'"
@@ -27,13 +27,13 @@
         <!-- <span
           style="margin-left: 20px;">{{ $route.meta.title }}</span> -->
       </div>
-      <div class="rights">
+<!--      <div class="rights">
         <span
           @click="$refs.layout.open()">
           <el-avatar
               :src="this.$common.headImg()"></el-avatar>
         </span>
-      </div>
+      </div>-->
     </div>
     <router-view></router-view>
     <LayOut ref="layout">

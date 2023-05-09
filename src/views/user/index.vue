@@ -12,9 +12,9 @@
     <div class="body" :class="{
       'phone':phone?true:false
     }">
-      <Notice :notice="notice"
+<!--      <Notice :notice="notice"
         @open="open">
-      </Notice>
+      </Notice>-->
       <div class="main_home">
         <div class="left"
           v-if="!phone">
@@ -132,7 +132,7 @@
 </template>
 
 <script>
-import Notice from '@/components/notice.vue'
+//import Notice from '@/components/notice.vue'
 import Menu from './components/menu.vue'
 import NoticeModal from './components/noticeModal.vue'
 import Content from './components/content.vue'
@@ -141,7 +141,7 @@ import SendText from './components/send.vue'
 import SendPic from './components/sendPic.vue'
 export default {
   name: 'marquee',
-  components: { Notice, Menu, ContentPic, SendPic, NoticeModal, Content, SendText },
+  components: { Menu, ContentPic, SendPic, NoticeModal, Content, SendText },
   data() {
     return {
       cmOptions: {
@@ -174,7 +174,7 @@ export default {
   mounted() {
     this.phone = JSON.parse(window.localStorage.getItem('phone'))
     console.log(this.phone, '000')
-    document.querySelector('.box').addEventListener('scroll', this.scrolling)
+    document.querySelector('.chat_right').addEventListener('scroll', this.scrolling)
     if (this.$route.query && this.$route.query.id) {
       console.log(122)
       this.isActive = 1
