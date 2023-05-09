@@ -110,6 +110,11 @@
             <span
               v-else-if="scope.row.state == '2'">
               <el-tag
+                type="danger">超时取消</el-tag>
+            </span>
+            <span
+              v-else-if="scope.row.state == '3'">
+              <el-tag
                 type="danger">支付失败</el-tag>
             </span>
           </template>
@@ -117,7 +122,7 @@
         <el-table-column
           prop="createTime"
           width="180"
-          label="支付时间">
+          label="创建时间">
         </el-table-column>
         <el-table-column
             label="操作">
@@ -208,6 +213,12 @@
                   v-else-if="item.state == '2'">
                   <el-tag
                     size="mini"
+                    type="danger">超时取消</el-tag>
+                </span>
+                <span
+                  v-else-if="item.state == '3'">
+                  <el-tag
+                    size="mini"
                     type="danger">支付失败</el-tag>
                 </span>
               </div>
@@ -221,7 +232,7 @@
               class="items">
               <div
                 class="label">
-                支付时间：
+                创建时间：
               </div>
               <div
                 class="value">
