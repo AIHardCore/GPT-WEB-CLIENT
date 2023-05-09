@@ -16,9 +16,7 @@
         v-if="item.role == 'assistant' && item.content"
         class="items">
         <div class="tx">
-          <img
-            :src="require('@/assets/chat.png')"
-            style="width:30px;height:30px">
+          <img :src="require('@/assets/chat.png')">
         </div>
         <div v-if="!phone"
           class="chat_box ">
@@ -63,7 +61,7 @@
         </div>
         <div class="tx">
           <img
-            :src="this.$common.headImg()"
+            :src="headImg"
             style="width:30px;height:30px">
         </div>
       </div>
@@ -141,6 +139,12 @@ export default {
         }
       }
     }
+  },
+  computed:{
+    headImg(){
+      let userInfo = JSON.parse(window.localStorage.getItem('userInfo'));
+      return userInfo.headImgUrl ? userInfo.headImgUrl:require('@/assets/user_avatar.png');
+    },
   },
   methods: {
     initTyped(input, fn, hooks) {

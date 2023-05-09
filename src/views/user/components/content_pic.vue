@@ -16,9 +16,7 @@
         v-if="item.role == 'assistant' && item.content"
         class="items">
         <div class="tx">
-          <img
-            :src="require('@/assets/chat.png')"
-            style="width:40px;height:40px">
+          <img :src="require('@/assets/chat.png')">
         </div>
         <div v-if="!phone"
           class="chat_box ">
@@ -54,8 +52,7 @@
         </div>
         <div class="tx">
           <img
-            :src="require('@/assets/user_avatar.png')"
-            style="width:40px;height:40px">
+            :src="headImg">
         </div>
       </div>
     </div>
@@ -71,7 +68,12 @@ export default {
       phone: false
     }
   },
-
+  computed:{
+    headImg(){
+      let userInfo = JSON.parse(window.localStorage.getItem('userInfo'));
+      return userInfo.headImgUrl ? userInfo.headImgUrl:require('@/assets/user_avatar.png');
+    },
+  },
   mounted() {
     this.phone = JSON.parse(window.localStorage.getItem('phone'))
     setTimeout(() => {

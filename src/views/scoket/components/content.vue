@@ -31,9 +31,7 @@
       <div class="items"
         v-if="chatObj.answer">
         <div class="tx">
-          <img
-            :src="require('@/assets/chat.png')"
-            style="width:30px;height:30px">
+          <img :src="require('@/assets/chat.png')">
         </div>
         <div
           v-if="!phone && chatObj.answer"
