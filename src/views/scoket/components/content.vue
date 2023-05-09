@@ -167,6 +167,10 @@ export default {
   width: 30px;
   height: 30px;
 }
+.tx img {
+  width: 30px;
+  height: 30px;
+}
 .chat_box {
   max-width: calc(100vw - 490px) !important;
 }
