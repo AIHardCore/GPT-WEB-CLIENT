@@ -51,7 +51,7 @@
           <el-tooltip
             class="item"
             effect="dark"
-            content="正常通讯"
+            content="连续通讯"
             placement="top-start">
             <img
               @click="changeChats(1)"

@@ -45,7 +45,7 @@
           <el-tooltip
             class="item"
             effect="dark"
-            content="正常通讯"
+            content="连续通讯"
             placement="top-start">
             <img
               @click="changeChats(0)"
@@ -347,6 +347,10 @@ export default {
             border-radius: 10px;
             overflow: hidden;
             margin-right: 10px;
+            img {
+              width: 30px;
+              height: 30px;
+            }
           }
           .chat_box {
             max-width: 60vw;

@@ -40,10 +40,10 @@ export const routes = [
         component: () => import('../views/scoket/index.vue')
       },
       {
-        name: '即时聊天',
+        name: '连续通讯',
         meta: {
           icon: 'el-icon-s-home',
-          title: '即时聊天'
+          title: '连续通讯'
         },
         path: '/scoket',
         name: 'scoket',
