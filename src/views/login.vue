@@ -118,7 +118,6 @@ export default {
         if (valid) {
           this.$https('LOGIN', this.form).then(res => {
             if (res.status != 200) {
-              debugger
               this.$alert(res.msg, '提示')
             } else {
               window.localStorage.setItem('userInfo', JSON.stringify(res.data))

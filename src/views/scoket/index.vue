@@ -168,6 +168,7 @@ export default {
   created() {},
 
   mounted() {
+    this.welcome()
     this.mdRegex = /[#*`|]/
     this.phone = JSON.parse(window.localStorage.getItem('phone'))
     document.querySelector('.chat_right').addEventListener('scroll', this.scrolling)
@@ -371,6 +372,14 @@ export default {
     showMessageBox() {
       this.dialogVisibles = false;
       this.$router.push('/user/product')
+    },
+    welcome(){
+      let user = JSON.parse(window.localStorage.getItem('userInfo'));
+      if (user.firstLogin == 1){
+        user.firstLogin = 0;
+        window.localStorage.setItem('userInfo',JSON.stringify(user))
+        this.$alert('', '提示')
+      }
     }
   }
 }
