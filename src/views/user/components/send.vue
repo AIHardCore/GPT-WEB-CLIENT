@@ -77,7 +77,7 @@ export default {
     getTypes() {
       this.$https('getType', {}).then(res => {
         this.obj.type = res.data.type
-        if (res.type > 1) this.num = res.data.dayRemainingTimes
+        if (res.data.type > 1) this.num = res.data.dayRemainingTimes
         else this.num = res.data.remainingTimes
         setTimeout(() => {
           if (this.num == 0) {
