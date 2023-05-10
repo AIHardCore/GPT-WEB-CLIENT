@@ -30,13 +30,13 @@
               <div
                 @click="openPay(item,2)"
                 class="item wd"
-                v-if="item.type !== 1">
+                v-if="item.type == 0">
                 {{ item.numberTimes }}次问答
               </div>
               <div
                 @click="openPay(item,2)"
                 class="item wd"
-                v-if="item.type == 1">
+                v-if="item.type !== 0">
                 每日上限：{{ item.monthlyNumber }}次问答
               </div>
             </div>
@@ -70,7 +70,7 @@
       }" :data="tableData"
         style="width: 100%">
         <el-table-column
-          prop="id"
+          prop="tradeNo"
           label="订单编号">
         </el-table-column>
         <el-table-column
@@ -148,7 +148,7 @@
               </div>
               <div
                 class="value">
-                {{ item.id }}
+                {{ item.tradeNo }}
               </div>
             </div>
             <div
