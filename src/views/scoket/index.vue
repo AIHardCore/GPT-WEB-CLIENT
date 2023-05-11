@@ -378,7 +378,7 @@ export default {
       if (user.firstLogin == 1){
         user.firstLogin = 0;
         window.localStorage.setItem('userInfo',JSON.stringify(user))
-        this.$alert('', '提示')
+        //this.$alert('', '提示')
       }
     }
   }

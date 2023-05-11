@@ -25,6 +25,16 @@
       <i class="el-icon-s-promotion"
         style="font-size: 20px;"></i>
     </el-button>
+    <el-dialog
+        title="提示"
+        :visible.sync="dialogVisibles"
+        width="60%">
+      <span>剩余次数不足,是否进行充值？</span>
+      <span slot="footer" class="dialog-footer">
+        <el-button size="mini" @click="dialogVisibles  = false">取 消</el-button>
+        <el-button size="mini" type="primary" @click="showMessageBox">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -41,7 +51,8 @@ export default {
       messagesList: [],
       newMessageList: [],
       chatListss: [],
-      num: 0
+      num: 0,
+      dialogVisibles:false
     }
   },
   watch: {
@@ -127,7 +138,7 @@ export default {
                 content: '网络异常，请重试。',
                 role: 'assistant'
               }
-              if (res.msg.indexOf('_')) {
+              if (res.msg.indexOf('_') > -1) {
                 const index = res.msg.indexOf('_')
                 const logId = res.msg.substring(index + 1, res.msg.length)
                 window.localStorage.setItem('logId', logId)
@@ -139,13 +150,20 @@ export default {
                   this.$emit('ok')
                 })
               }
+              if (res.msg.indexOf("剩余次数不足,请充值") > -1){
+                this.dialogVisibles = true;
+              }
             }
           })
         }, 500)
       } else {
         this.$message.error('请输入')
       }
-    }
+    },
+    showMessageBox() {
+      this.dialogVisibles = false;
+      this.$router.push('/user/product')
+    },
   }
 }
 </script>

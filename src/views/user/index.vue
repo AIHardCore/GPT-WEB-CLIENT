@@ -118,16 +118,6 @@
     </el-drawer>
     <NoticeModal ref="notice">
     </NoticeModal>
-    <el-dialog
-        title="提示"
-        :visible.sync="dialogVisibles"
-        width="60%">
-      <span>剩余次数不足,是否进行充值？</span>
-      <span slot="footer" class="dialog-footer">
-        <el-button size="mini" @click="dialogVisibles  = false">取 消</el-button>
-        <el-button size="mini" type="primary" @click="showMessageBox">确 定</el-button>
-      </span>
-    </el-dialog>
   </div>
 </template>
 
@@ -153,7 +143,6 @@ export default {
       },
       list: [],
       totals: 0,
-      dialogVisibles: false,
       sendText: '',
       title: 'New Chat',
       isActive: 0,
@@ -302,10 +291,6 @@ export default {
       this.drawer = data.show
       this.$store.commit('SET_OPEN', data.show)
     },
-    showMessageBox() {
-      this.dialogVisibles = false;
-      this.$router.push('/user/product')
-    }
   }
 }
 </script>
