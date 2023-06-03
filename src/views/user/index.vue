@@ -47,43 +47,55 @@
             effect="dark"
             content="连续通讯"
             placement="top-start">
-            <img
-              @click="changeChats(0)"
-              :class="{'active':isActive == 0}"
-              src="../../assets/chat_icon.png"
-              class="icon">
+            <div>
+                <img
+                    @click="changeChats(0)"
+                    :class="{'active':isActive == 0}"
+                    src="../../assets/chat_icon.png"
+                    class="icon">
+                <span class="icon">连续</span>
+            </div>
           </el-tooltip>
           <el-tooltip
             class="item"
             effect="dark"
             content="即时通讯"
             placement="top-start">
-            <img
-              @click="changeChats(2)"
-              :class="{'active':isActive == 2}"
-              src="../../assets/chats_icon.png"
-              class="icon">
+              <div>
+                  <img
+                      @click="changeChats(2)"
+                      :class="{'active':isActive == 2}"
+                      src="../../assets/chats_icon.png"
+                      class="icon">
+                  <span class="icon">即时</span>
+              </div>
           </el-tooltip>
           <el-tooltip
             class="item"
             effect="dark"
             content="画图"
             placement="top-start">
-            <img
-              @click="changeChats(1)"
-              :class="{'active':isActive == 1}"
-              src="../../assets/picture.png"
-              class="icon">
+            <div>
+                <img
+                    @click="changeChats(1)"
+                    :class="{'active':isActive == 1}"
+                    src="../../assets/picture.png"
+                    class="icon">
+                <span class="icon">画图</span>
+            </div>
           </el-tooltip>
           <el-tooltip
             class="item"
             effect="dark"
             content="充值"
             placement="top-start">
-            <img
-              @click="changeChats(3)"
-              src="../../assets/pay_2.png"
-              class="icon">
+              <div>
+                  <img
+                    @click="changeChats(3)"
+                    src="../../assets/pay_2.png"
+                    class="icon">
+                  <span class="icon">充值</span>
+              </div>
           </el-tooltip>
         </div>
         <SendText
@@ -371,10 +383,19 @@ export default {
   width: calc(100% - 290px);
   padding-left: 20px;
   .icon {
-    width: 20px;
-    margin: 0 10px;
-    cursor: pointer;
-    filter: grayscale(100%);
+      width: 20px;
+      text-align: center;
+      margin: 0 10px;
+      cursor: pointer;
+      filter: grayscale(100%);
+  }
+  div{
+      width: 45px;
+      line-height: 12px;
+      span{
+          font-size: 12px;
+          //display: block;
+      }
   }
   .icon:hover,
   .icon.active {
