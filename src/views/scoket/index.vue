@@ -60,7 +60,7 @@
               @click="changeChats(1)"
               src="../../assets/chat_icon.png"
               class="icon">
-              <span class="icon">连续</span>
+              <span class="icon" @click="changeChats(1)">连续</span>
             </div>
           </el-tooltip>
           <el-tooltip
@@ -72,7 +72,7 @@
               @click="changeChats(3)"
               src="../../assets/picture.png"
               class="icon">
-              <span class="icon">画图</span>
+              <span class="icon" @click="changeChats(3)">画图</span>
             </div>
           </el-tooltip>
           <el-tooltip
@@ -84,7 +84,7 @@
               @click="changeChats(2)"
               src="../../assets/pay_2.png"
               class="icon">
-              <span class="icon">充值</span>
+              <span class="icon" @click="changeChats(2)">充值</span>
             </div>
           </el-tooltip>
           <span
